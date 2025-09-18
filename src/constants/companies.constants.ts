@@ -1,0 +1,18 @@
+export const defaultValuesNewCompanyForm = {
+    name: '',
+    company_name: '',
+    category: null,
+    type: null,
+    size: null,
+    cnpj: '',
+    email: '',
+    description: '',
+    cep: '',
+    state: null,
+    city: '',
+    street: '',
+    number: '',
+    neighborhood: '',
+    complement: '',
+    photo: null,
+}

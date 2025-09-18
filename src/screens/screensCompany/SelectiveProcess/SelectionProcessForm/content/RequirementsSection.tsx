@@ -1,0 +1,119 @@
+import InputForm from "@/components/UI/InputForm";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import {
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    Divider,
+    Flex,
+    FormControl,
+    FormLabel,
+    Icon,
+    IconButton,
+    Stack,
+    Switch,
+} from "@chakra-ui/react";
+import React from "react";
+import type { UseFormRegister } from "react-hook-form";
+
+type Requirement = {
+    id: string;
+    name: string;
+    required: boolean;
+};
+
+type RequirementsSectionProps = {
+    requirements: Requirement[];
+    add: (item: Omit<Requirement, "id">) => void;
+    remove: (index: number) => void;
+    register: UseFormRegister<any>;
+    update: (index: number, value: Requirement) => void;
+};
+
+export const RequirementsSection: React.FC<RequirementsSectionProps> = ({
+    requirements,
+    add,
+    remove,
+    register,
+    update,
+}) => {
+    return (
+        <Card>
+            <CardHeader pb={0}>
+                <Stack direction="row" align="center" justify="space-between">
+                    <FormLabel fontSize="lg" fontWeight="semibold" mb={0}>
+                        Requisitos da vaga
+                    </FormLabel>
+                </Stack>
+            </CardHeader>
+            <CardBody>
+                <Alert status='info'>
+                    <AlertIcon />
+                    <AlertTitle>Observação:</AlertTitle>
+                    <AlertDescription>
+                        Selecione os requisitos da vaga logo abaixo, você pode definir
+                        os pesos de acordo com a importância de cada um, para filtrar
+                        melhor os candidatos no processo seletivo.
+                    </AlertDescription>
+                </Alert>
+
+                <Button
+                    colorScheme="green"
+                    variant="solid"
+                    type="button"
+                    my={4}
+                    onClick={() => add({ name: "", required: false })}
+                >
+                    <AddIcon mr={2} />
+                    Adicionar Requisito
+                </Button>
+
+                {requirements.map((field, index) => (
+                    <React.Fragment key={field.id}>
+                        <Flex align="center" gap={2} >
+                            <IconButton
+                                aria-label="delete-requirement"
+                                colorScheme="red"
+                                mb={4}
+                                onClick={() => remove(index)}
+                                icon={<DeleteIcon />}
+                            />
+
+                            <InputForm
+                                placeholder="Enunciado"
+                                defaultValue={field.name}
+                                {...register(`requirements.${index}.name`)}
+                            />
+                        </Flex>
+
+                        <FormControl display="flex" alignItems="center" mb={4}>
+                            <FormLabel htmlFor={`requirements.${index}.required`} mb="0">
+                                Definir como obrigatório?
+                            </FormLabel>
+                            <Switch
+                                id={`requirements.${index}.required`}
+                                isChecked={field.required}
+                                onChange={(e) =>
+                                    update(index, {
+                                        ...field,
+                                        required: e.target.checked,
+                                    })
+                                }
+                                colorScheme="orange"
+                            />
+                        </FormControl>
+
+                        <Divider />
+                    </React.Fragment>
+                ))}
+
+            </CardBody>
+
+        </Card>
+    );
+};
