@@ -67,7 +67,7 @@ const defaultValues: FormValuesNewCompany = {
     photo: undefined as any,
 }
 
-export default function CompanyForm() {
+export default function CompanyProfile() {
     const toast = useToast()
     const navigate = useNavigate()
     const { id } = useParams<{ id: string }>()
@@ -218,11 +218,6 @@ export default function CompanyForm() {
                         <Heading size="md">{values.name || "Nome fantasia da empresa"}</Heading>
                         <Text color="muted">{values.company_name || "Razão social"}</Text>
                         <Text color="muted">{values.email || "email@empresa.com"}</Text>
-                        <Box pt={2}>
-                            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)} isLoading={isSubmitting} isDisabled={!isDirty}>
-                                Salvar alterações
-                            </Button>
-                        </Box>
                     </Stack>
                 </Flex>
             </CardBody>
@@ -287,12 +282,19 @@ export default function CompanyForm() {
                 </Section>
 
 
-                <HStack>
-                    <Button colorScheme="orange" onClick={handleSubmit(onSubmit)} isLoading={isSubmitting}>
-                        {isEdit ? "Atualizar empresa" : "Salvar empresa"}
-                    </Button>
-                    <Button variant="ghost" onClick={() => navigate("/empresas")}>Cancelar</Button>
-                </HStack>
+                {/* Segurança */}
+                <Section title="Segurança" right={<Text color="gray.500" fontSize="sm">Altere sua senha apenas se necessário</Text>}>
+                    <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
+                        <InputForm label="Senha atual" placeholder="********" type="password" {...register("current_password")} />
+                        <InputForm label="Nova senha" placeholder="********" type="password" {...register("new_password")} />
+                        <InputForm label="Confirmar nova senha" placeholder="********" type="password" {...register("confirm_password")} />
+                    </SimpleGrid>
+                    <CardFooter alignItems="center" justifyContent="center" px={0} pt={4}>
+                        <HStack>
+                            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)} isLoading={isSubmitting}>Atualizar perfil</Button>
+                        </HStack>
+                    </CardFooter>
+                </Section>
 
             </Stack>
 

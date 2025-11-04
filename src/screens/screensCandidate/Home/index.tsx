@@ -14,7 +14,6 @@ import {
     GridItem,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import Layout from "@/Layout";
 
 // SVGs (URL ou componente SVGR)
 import Profile from "../../../assets/ilustrations/profile.svg";
@@ -110,58 +109,56 @@ const FeatureTile: React.FC<FeatureTileProps> = ({
 // ===================== Página Home =====================
 const CandidateHome: React.FC = () => {
     return (
-        <Layout>
-            <Box>
-                <Stack spacing={6}>
-                    <Box>
-                        <Heading as="h1" size="lg">
-                            Bem-vindo(a) ao Great Talents
-                        </Heading>
-                        <Text color="GrayText" mt={1}>
-                            Comece por aqui: crie seu currículo, explore vagas e mantenha seu perfil atualizado.
-                        </Text>
-                    </Box>
+        <Box>
+            <Stack spacing={6}>
+                <Box>
+                    <Heading as="h1" size="lg">
+                        Bem-vindo(a) ao Great Talents
+                    </Heading>
+                    <Text color="GrayText" mt={1}>
+                        Comece por aqui: crie seu currículo, explore vagas e mantenha seu perfil atualizado.
+                    </Text>
+                </Box>
 
-                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-                        <FeatureTile
-                            title="Meu Currículo"
-                            description="Monte e atualize seu currículo com rapidez. Deixe-o atraente para empresas e compartilhe quando quiser."
-                            to="/candidato/curriculo"
-                            illustration={Resume}
-                            illustrationAlt="Ilustração de currículo"
-                            cta="Ir para Currículo"
-                        />
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+                    <FeatureTile
+                        title="Meu Currículo"
+                        description="Monte e atualize seu currículo com rapidez. Deixe-o atraente para empresas e compartilhe quando quiser."
+                        to="/candidato/curriculo"
+                        illustration={Resume}
+                        illustrationAlt="Ilustração de currículo"
+                        cta="Ir para Currículo"
+                    />
 
-                        <FeatureTile
-                            title="Minhas Vagas"
-                            description="Acompanhe as vagas nas quais você se candidatou, veja o status e próximos passos."
-                            to="/candidato/minhas-vagas"
-                            illustration={MyOpportunities}
-                            illustrationAlt="Ilustração de vagas do candidato"
-                            cta="Ver minhas vagas"
-                        />
+                    <FeatureTile
+                        title="Minhas Vagas"
+                        description="Acompanhe as vagas nas quais você se candidatou, veja o status e próximos passos."
+                        to="/candidato/minhas-vagas"
+                        illustration={MyOpportunities}
+                        illustrationAlt="Ilustração de vagas do candidato"
+                        cta="Ver minhas vagas"
+                    />
 
-                        <FeatureTile
-                            title="Ver Vagas"
-                            description="Descubra oportunidades compatíveis com seu perfil. Use filtros para encontrar a vaga ideal."
-                            to="/ver-vagas"
-                            illustration={Opportunities}
-                            illustrationAlt="Ilustração de pesquisa de vagas"
-                            cta="Explorar vagas"
-                        />
+                    <FeatureTile
+                        title="Ver Vagas"
+                        description="Descubra oportunidades compatíveis com seu perfil. Use filtros para encontrar a vaga ideal."
+                        to="/ver-vagas"
+                        illustration={Opportunities}
+                        illustrationAlt="Ilustração de pesquisa de vagas"
+                        cta="Explorar vagas"
+                    />
 
-                        <FeatureTile
-                            title="Meu Perfil"
-                            description="Complete suas informações pessoais e profissionais para melhorar suas recomendações."
-                            to="/candidato/meu-perfil"
-                            illustration={Profile}
-                            illustrationAlt="Ilustração de perfil do usuário"
-                            cta="Editar perfil"
-                        />
-                    </SimpleGrid>
-                </Stack>
-            </Box>
-        </Layout>
+                    <FeatureTile
+                        title="Meu Perfil"
+                        description="Complete suas informações pessoais e profissionais para melhorar suas recomendações."
+                        to="/candidato/meu-perfil"
+                        illustration={Profile}
+                        illustrationAlt="Ilustração de perfil do usuário"
+                        cta="Editar perfil"
+                    />
+                </SimpleGrid>
+            </Stack>
+        </Box>
     );
 };
 

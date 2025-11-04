@@ -1,23 +1,16 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-
-import api from "@/services/api";
+import api from "../services/api";
 import {
     nameKeyLocalStorage,
     profileKeyLocalStorage,
     tokenKeyLocalStorage,
 } from "@/constants/global.constants";
 
-const AuthContext = createContext<{
-    token: string | null;
-    profile: string | null;
-    name: string | null;
-    setToken: (token: string, profile: string, name: string) => void;
-    logout: () => void;
-}>({
+const AuthContext = createContext({
     token: null,
     profile: null,
-    name: null,
+    name: '',
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setToken: (_token: string, _profile: string, _name: string) => { },
     logout: () => { },

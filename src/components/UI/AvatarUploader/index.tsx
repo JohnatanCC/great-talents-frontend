@@ -214,10 +214,10 @@ export default function AvatarUploader({
             {/* ações secundárias */}
             <HStack align="center" justifyContent="center" spacing={2} mt={3}>
                 <Tooltip label="Alterar foto">
-                    <IconButton aria-label="Alterar foto" icon={<EditIcon />} size="sm" onClick={openFileDialog} variant="outline" />
+                    <IconButton colorScheme="blue" aria-label="Alterar foto" icon={<EditIcon />} size="sm" onClick={openFileDialog} variant="outline" />
                 </Tooltip>
                 <Tooltip label="Remover">
-                    <IconButton aria-label="Remover foto" icon={<CloseIcon />} size="sm" onClick={removePhoto} variant="ghost" />
+                    <IconButton colorScheme="red" aria-label="Remover foto" icon={<CloseIcon />} size="sm" onClick={removePhoto} variant="ghost" />
                 </Tooltip>
             </HStack>
 

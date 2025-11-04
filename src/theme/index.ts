@@ -298,12 +298,17 @@ const components = {
                 tab: {
                     _focus: { boxShadow: "none" },
                     _focusVisible: { boxShadow: focusRingSubtle },
-
                     fontWeight: 500,
                     borderRadius: "md",
                     transition: "all 0.18s cubic-bezier(.4,0,.2,1)",
+                    flexShrink: 1,
+                    minWidth: 0,
                 },
-                tablist: { borderColor: "border" },
+                tablist: {
+                    borderColor: "border",
+                    flexWrap: "wrap",
+                    gap: 1,
+                },
                 tabpanel: { px: 0 },
             },
             enclosed: {
@@ -313,12 +318,16 @@ const components = {
                     _focusVisible: { boxShadow: focusRingSubtle, },
                     _selected: { background: "brandAlpha.300", borderColor: "brand.500", color: "brand.600", },
                     fontWeight: 500,
-
+                    borderColor: "border",
                     transition: "all 0.18s cubic-bezier(.4,0,.2,1)",
+                    flexShrink: 1,
+                    minWidth: 0,
+                },
+                tablist: {
+                    flexWrap: "wrap",
+                    gap: 1,
                 },
                 tabpanel: { px: 0 },
-
-
             },
             unstyled: {
                 tab: {
@@ -332,6 +341,7 @@ const components = {
                 },
                 tablist: {
                     border: "none",
+                    flexWrap: "wrap",
                 },
                 tabpanel: {
                     p: 0,

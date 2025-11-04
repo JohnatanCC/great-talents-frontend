@@ -94,10 +94,8 @@ export const Education = () => {
                 ) : educations.length === 0 ? (
                     <Alert status="info" variant="left-accent" borderRadius="md">
                         <AlertIcon />
-                        Você ainda não adicionou nenhuma formação. Clique em{" "}
-                        <Text as="span" fontWeight="bold" ml={1}>
-                            Adicionar
-                        </Text>{" "}
+                        Você ainda não adicionou nenhuma formação. Clique em
+                        Adicionar
                         para cadastrar sua primeira.
                     </Alert>
                 ) : (

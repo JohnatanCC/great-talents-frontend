@@ -52,10 +52,10 @@ export const RequirementsSection: React.FC<RequirementsSectionProps> = ({
                 </Stack>
             </CardHeader>
             <CardBody>
-                <Alert status='info'>
+                <Alert display="flex" flexDirection="column" status='info'>
                     <AlertIcon />
                     <AlertTitle>Observação:</AlertTitle>
-                    <AlertDescription>
+                    <AlertDescription textAlign="center">
                         Selecione os requisitos da vaga logo abaixo, você pode definir
                         os pesos de acordo com a importância de cada um, para filtrar
                         melhor os candidatos no processo seletivo.

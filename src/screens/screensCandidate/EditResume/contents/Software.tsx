@@ -91,10 +91,8 @@ export const Software: React.FC = () => {
                 ) : softwares.length === 0 ? (
                     <Alert status="info" variant="left-accent" borderRadius="md">
                         <AlertIcon />
-                        Você ainda não cadastrou nenhuma habilidade. Clique em{" "}
-                        <Text as="span" fontWeight="bold" mx={1}>
-                            Adicionar
-                        </Text>{" "}
+                        Você ainda não cadastrou nenhuma habilidade. Clique em
+                        Adicionar
                         para incluir sua primeira ferramenta.
                     </Alert>
                 ) : (

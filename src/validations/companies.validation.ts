@@ -4,13 +4,13 @@ import * as yup from "yup";
 const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/;
 
 export const validationNewCompanyForm = yup.object().shape({
-    name: yup.string().min(3, "O nome da empresa deve ter pelo menos 3 caracteres").required(),
-    company_name: yup.string().min(3, "O nome da empresa deve ter pelo menos 3 caracteres").required(),
+    name: yup.string().min(3, "O nome da empresa deve ter pelo menos 3 caracteres").required("Nome é obrigatório"),
+    company_name: yup.string().min(3, "A razão social deve ter pelo menos 3 caracteres").required("Razão social é obrigatória"),
     category: yup.object().nullable().required("Categoria é obrigatória"),
     type: yup.object().nullable().required("Tipo é obrigatório"),
     size: yup.object().nullable().required("Tamanho é obrigatório"),
     cnpj: yup.string()
-        .matches(cnpjRegex, "CNPJ inválido, formato esperado: 99.999.999/9999-99")  
+        .matches(cnpjRegex, "CNPJ inválido, formato esperado: 99.999.999/9999-99")
         .required("CNPJ é obrigatório"),
     email: yup.string().email("E-mail inválido").required("E-mail é obrigatório"),
     description: yup
@@ -18,5 +18,12 @@ export const validationNewCompanyForm = yup.object().shape({
         .min(3, "A descrição deve ter pelo menos 3 caracteres")
         .max(500, "A descrição não pode ter mais de 500 caracteres")
         .required("Descrição é obrigatória"),
+    cep: yup.string().required("CEP é obrigatório"),
     state: yup.object().nullable().required("Estado é obrigatório"),
+    city: yup.string().required("Cidade é obrigatória"),
+    neighborhood: yup.string().required("Bairro é obrigatório"),
+    street: yup.string().required("Logradouro é obrigatório"),
+    number: yup.string().required("Número é obrigatório"),
+    complement: yup.string(),
+    photo: yup.mixed().nullable(),
 }).required();

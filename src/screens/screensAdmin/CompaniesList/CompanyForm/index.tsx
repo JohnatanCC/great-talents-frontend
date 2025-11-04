@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Box,
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
-  Container,
   Flex,
   GridItem,
   Heading,
@@ -14,13 +12,11 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  Textarea,
-  useColorModeValue,
   useToast,
 } from "@chakra-ui/react"
 import { Controller, useForm, type SubmitHandler } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
+
+
 import { useNavigate, useParams } from "react-router-dom"
 
 // === Seus componentes reutilizados ===
@@ -38,7 +34,7 @@ import type { FormValuesNewCompany } from "@/types/companies.types"
 import InputForm from "@/components/UI/InputForm"
 import { SelectForm } from "@/components/UI/SelectForm"
 import TextareaForm from "@/components/UI/TexareaForm"
-import { validationNewCompanyForm } from "@/validations/companies.validation"
+
 
 /**
  * CompanyProfileForm — Layout de Perfil/Configurações para Empresa
@@ -83,14 +79,12 @@ export default function CompanyForm() {
   const {
     control,
     register,
-    setValue,
     handleSubmit,
     reset,
-    watch,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting },
   } = useForm<FormValuesNewCompany>({
     defaultValues,
-    resolver: yupResolver(validationNewCompanyForm),
+    // resolver: yupResolver(validationNewCompanyForm),
     mode: "onTouched",
   })
   // Load selects
@@ -173,7 +167,7 @@ export default function CompanyForm() {
         await CompanyService.create(data)
         toast({ title: "Nova empresa cadastrada com sucesso", status: "success" })
       }
-      navigate("/empresas")
+      navigate("/admin/empresas")
     } catch (errors) {
       // mantém sua estrutura de tratamento
       toast(toastTemplate({ status: "error", description: (errors as any)?.response?.data?.message || "Erro ao salvar" }))
@@ -195,69 +189,104 @@ export default function CompanyForm() {
   // Render
   return (
     <Layout>
-      <Stack spacing={6}>
+      <Box as="form" id="company-form" onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={6}>
 
-        {/* Informações da empresa */}
-        <Section title="Informações da empresa">
-          <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-            <InputForm label="Nome" placeholder="Insira o nome da empresa" type="text" {...register("name")} errorMessage={errors.name?.message as any} />
-            <InputForm label="Razão social" placeholder="Escreva a razão social" type="text" {...register("company_name")} errorMessage={errors.company_name?.message as any} />
+          {/* Logo da empresa */}
+          <Section title="Logo da empresa">
+            <Flex align="center" justify="center" w="100%">
+              <Controller
+                name="photo"
+                control={control}
+                render={({ field }) => (
+                  <AvatarUploader
+                    onFileSelected={(file: File) => field.onChange(file)}
+                    ariaLabel="Selecionar logo da empresa"
+                    size={150}
+                  />
+                )}
+              />
+              {errors.photo?.message && (
+                <Text fontSize="sm" color="red.500" mt={2}>
+                  {errors.photo.message}
+                </Text>
+              )}
+            </Flex>
+          </Section>
 
-            <Controller name="category" control={control} render={({ field }) => (
-              <SelectForm {...field} label="Ramo da empresa" placeholder="Defina o ramo" options={categoriesOptions} onChangeSelect={(n: any, opt: any) => field.onChange(opt)} errorMessage={errors.category?.message as any} />
-            )} />
-            <Controller name="type" control={control} render={({ field }) => (
-              <SelectForm {...field} label="Tipo de empresa" placeholder="Selecione o tipo" options={typesOptions} onChangeSelect={(n: any, opt: any) => field.onChange(opt)} errorMessage={errors.type?.message as any} />
-            )} />
+          {/* Informações da empresa */}
+          <Section title="Informações da empresa">
+            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+              <InputForm label="Nome" placeholder="Insira o nome da empresa" type="text" {...register("name")} errorMessage={errors.name?.message as any} />
+              <InputForm label="Razão social" placeholder="Escreva a razão social" type="text" {...register("company_name")} errorMessage={errors.company_name?.message as any} />
 
-            <Controller name="size" control={control} render={({ field }) => (
-              <SelectForm {...field} label="Tamanho da empresa" placeholder="Selecione" options={sizesOptions} onChangeSelect={(n: any, opt: any) => field.onChange(opt)} errorMessage={errors.size?.message as any} />
-            )} />
-            <InputForm label="CNPJ" placeholder="00.000.000/0000-00" {...register("cnpj")} errorMessage={errors.cnpj?.message as any} />
+              <Controller name="category" control={control} render={({ field }) => (
+                <SelectForm {...field} label="Ramo da empresa" placeholder="Defina o ramo" options={categoriesOptions} onChangeSelect={(_: any, opt: any) => field.onChange(opt)} errorMessage={errors.category?.message as any} />
+              )} />
+              <Controller name="type" control={control} render={({ field }) => (
+                <SelectForm {...field} label="Tipo de empresa" placeholder="Selecione o tipo" options={typesOptions} onChangeSelect={(_: any, opt: any) => field.onChange(opt)} errorMessage={errors.type?.message as any} />
+              )} />
 
-            <InputForm label="Email" placeholder="email@empresa.com" type="email" {...register("email")} errorMessage={errors.email?.message as any} isDisabled={isEdit} />
-          </SimpleGrid>
-        </Section>
+              <Controller name="size" control={control} render={({ field }) => (
+                <SelectForm {...field} label="Tamanho da empresa" placeholder="Selecione" options={sizesOptions} onChangeSelect={(_: any, opt: any) => field.onChange(opt)} errorMessage={errors.size?.message as any} />
+              )} />
+              <InputForm label="CNPJ" placeholder="00.000.000/0000-00" {...register("cnpj")} errorMessage={errors.cnpj?.message as any} />
 
-        {/* Localização */}
-        <Section title="Localização">
-          <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-            <InputForm label="CEP" placeholder="00000-000" {...register("cep")} errorMessage={errors.cep?.message as any} />
-            <InputForm label="Logradouro" placeholder="Rua/Av." {...register("street")} errorMessage={errors.street?.message as any} />
+              <InputForm label="Email" placeholder="email@empresa.com" type="email" {...register("email")} errorMessage={errors.email?.message as any} isDisabled={isEdit} />
+            </SimpleGrid>
+          </Section>
 
-            <Controller name="state" control={control} render={({ field }) => (
-              <SelectForm {...field} label="Estado" placeholder="UF" options={ufs} onChangeSelect={(n: any, opt: any) => field.onChange(opt)} errorMessage={errors.state?.message as any} />
-            )} />
-            <InputForm label="Cidade" placeholder="Cidade" {...register("city")} errorMessage={errors.city?.message as any} />
+          {/* Localização */}
+          <Section title="Localização">
+            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+              <InputForm label="CEP" placeholder="00000-000" {...register("cep")} errorMessage={errors.cep?.message as any} />
+              <InputForm label="Logradouro" placeholder="Rua/Av." {...register("street")} errorMessage={errors.street?.message as any} />
 
-            <InputForm label="Bairro" placeholder="Bairro" {...register("neighborhood")} errorMessage={errors.neighborhood?.message as any} />
-            <GridItem colSpan={{ base: 1, md: 1 }}>
-              <InputForm label="Número" placeholder="Número" {...register("number")} />
-            </GridItem>
-            <GridItem colSpan={{ base: 1, md: 1 }}>
-              <InputForm label="Complemento" placeholder="Apto, bloco, ref." {...register("complement")} />
-            </GridItem>
-          </SimpleGrid>
-        </Section>
+              <Controller name="state" control={control} render={({ field }) => (
+                <SelectForm {...field} label="Estado" placeholder="UF" options={ufs} onChangeSelect={(_: any, opt: any) => field.onChange(opt)} errorMessage={errors.state?.message as any} />
+              )} />
+              <InputForm label="Cidade" placeholder="Cidade" {...register("city")} errorMessage={errors.city?.message as any} />
 
-        {/* Descrição */}
-        <Section title="Sobre a empresa">
-          <Stack spacing={4}>
-            <Textarea placeholder="Escreva um resumo curto sobre a empresa (3–6 linhas)." resize="vertical" minH="120px" maxLength={600} {...register("description")} />
-            <TextareaForm label="Descrição detalhada" placeholder="Principais atividades, cases relevantes…" minH="110px" resize="vertical" {...register("description")} errorMessage={errors.description?.message as any} />
-          </Stack>
-        </Section>
+              <InputForm label="Bairro" placeholder="Bairro" {...register("neighborhood")} errorMessage={errors.neighborhood?.message as any} />
+              <GridItem colSpan={{ base: 1, md: 1 }}>
+                <InputForm label="Número" placeholder="Número" {...register("number")} />
+              </GridItem>
+              <GridItem colSpan={{ base: 1, md: 1 }}>
+                <InputForm label="Complemento" placeholder="Apto, bloco, ref." {...register("complement")} />
+              </GridItem>
+            </SimpleGrid>
+          </Section>
+
+          {/* Descrição */}
+          <Section title="Sobre a empresa">
+            <Stack spacing={4}>
+              <TextareaForm
+                label="Descrição da empresa"
+                placeholder="Escreva uma descrição sobre a empresa, suas atividades principais, missão e valores..."
+                minH="120px"
+                resize="vertical"
+                maxLength={500}
+                {...register("description")}
+                errorMessage={errors.description?.message as any}
+              />
+            </Stack>
+          </Section>
 
 
-        <HStack>
-          <Button colorScheme="orange" onClick={handleSubmit(onSubmit)} isLoading={isSubmitting}>
-            {isEdit ? "Atualizar empresa" : "Salvar empresa"}
-          </Button>
-          <Button variant="ghost" onClick={() => navigate("/empresas")}>Cancelar</Button>
-        </HStack>
+          <HStack>
+            <Button
+              colorScheme="orange"
+              type="submit"
+              form="company-form"
+              isLoading={isSubmitting}
+            >
+              {isEdit ? "Atualizar empresa" : "Salvar empresa"}
+            </Button>
+            <Button variant="ghost" onClick={() => navigate("/admin/empresas")}>Cancelar</Button>
+          </HStack>
 
-      </Stack>
-
+        </Stack>
+      </Box>
     </Layout>
   )
 }

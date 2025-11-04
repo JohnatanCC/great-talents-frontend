@@ -32,15 +32,15 @@ import {
 } from "@chakra-ui/react"
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons"
 import { useNavigate } from "react-router-dom"
-import Layout from "@/Layout"
+
 import CompanyService from "@/services/CompanyService"
 import { normalize } from "@/utils/normalize"
 import type { Company } from "@/types/companies.types"
-import { companiesMock } from "./mock"
+
 import SearchBar from "@/components/UI/SearchBar"
 import Content from "@/components/UI/Content"
 
-const USE_MOCK = true // Altere para false para usar o service real
+
 
 const PAGE_SIZE = 10
 
@@ -56,9 +56,10 @@ export default function CompaniesList() {
     const [rawCompanies, setRawCompanies] = useState<Company[]>([])
     const [searchInput, setSearchInput] = useState("")
     const [search, setSearch] = useState("") // debounced
-    const [loading, setLoading] = useState(true)
-    const [selectedId, setSelectedId] = useState<number | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null)
     const [page, setPage] = useState(1)
+    const [error, setError] = useState<string | null>(null)
     const toast = useToast()
     const navigate = useNavigate()
 
@@ -68,28 +69,49 @@ export default function CompaniesList() {
         return () => clearTimeout(t)
     }, [searchInput])
 
-    // Fetch data
+    // Fetch data with retry mechanism
     const isMounted = useRef(true)
+    const [retryCount, setRetryCount] = useState(0)
+
+    const fetchCompanies = async (isRetry = false) => {
+        try {
+            if (!isRetry) {
+                setIsLoading(true)
+                setError(null)
+            }
+
+            const response = await CompanyService.findAll()
+
+            if (isMounted.current) {
+                const companies = toArrayResponse(response)
+                setRawCompanies(companies)
+                setError(null)
+                setRetryCount(0)
+                setIsLoading(false)
+            }
+        } catch (error) {
+            if (isMounted.current) {
+                const errorMessage = (error as any)?.response?.data?.message || "Erro ao obter os dados das empresas"
+                setError(errorMessage)
+
+                if (!isRetry) {
+                    toast({
+                        title: "Erro ao carregar empresas",
+                        description: `${errorMessage}${retryCount < 2 ? ' - Você pode tentar recarregar a página.' : ''}`,
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                    })
+                }
+                setIsLoading(false)
+            }
+        }
+    }
 
     useEffect(() => {
         isMounted.current = true
-        const fetchCompanies = async () => {
-            try {
-                setLoading(true)
-                if (USE_MOCK) {
-                    if (isMounted.current) setRawCompanies(companiesMock)
-                } else {
-                    const resp = await CompanyService.findAll()
-                    const list = toArrayResponse(resp)
-                    if (isMounted.current) setRawCompanies(list)
-                }
-            } catch (e) {
-                toast({ title: "Erro ao carregar empresas", status: "error" })
-            } finally {
-                if (isMounted.current) setLoading(false)
-            }
-        }
         fetchCompanies()
+
         return () => {
             isMounted.current = false
         }
@@ -123,124 +145,151 @@ export default function CompaniesList() {
 
     // Delete flow
     const askDelete = (id: number) => {
-        setSelectedId(id)
+        setSelectedCompanyId(id)
         onOpen()
     }
 
+    const handleDeleteCompany = async () => {
+        if (selectedCompanyId === null) return
 
-    const doDelete = async () => {
-        if (!selectedId) return
         try {
-            if (USE_MOCK) {
-                setRawCompanies((prev) => prev.filter((c) => c.id !== selectedId))
-            } else {
-                await CompanyService.delete(selectedId)
-                setRawCompanies((prev) => prev.filter((c) => c.id !== selectedId))
-            }
-            toast({ title: "Empresa removida", status: "success" })
-        } catch (e) {
-            toast({ title: "Erro ao deletar empresa", status: "error" })
-        } finally {
+            await CompanyService.delete(selectedCompanyId)
+            setRawCompanies(prevCompanies =>
+                prevCompanies.filter(company => company.id !== selectedCompanyId)
+            )
+            toast({
+                title: "Empresa removida com sucesso",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            })
             onClose()
+        } catch (error) {
+            const errorMessage = (error as any)?.response?.data?.message || "Erro ao deletar empresa"
+            toast({
+                title: "Erro ao deletar empresa",
+                description: errorMessage,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            })
         }
     }
 
     return (
-        <Layout>
-            <Content >
-                <CardHeader>
-                    <Flex align="center" justify="space-between" gap={3} wrap="wrap">
-                        <Heading size="lg">Empresas cadastradas</Heading>
-                        <HStack>
+        <Content >
+            <CardHeader>
+                <Flex align="center" justify="space-between" gap={3} wrap="wrap">
+                    <Heading size="lg">Empresas cadastradas</Heading>
+                    <HStack>
+                        <Button
+                            variant="outline"
+                            onClick={() => fetchCompanies()}
+                            isLoading={isLoading}
+                            size="sm"
+                        >
+                            Atualizar
+                        </Button>
+                        <Button colorScheme="brand" onClick={() => navigate("/admin/empresas/nova")}>Cadastrar</Button>
+                    </HStack>
+                </Flex>
 
-                            <Button colorScheme="brand" onClick={() => navigate("/admin/empresa/nova")}>Cadastrar</Button>
-                        </HStack>
-                    </Flex>
-
-                    <Flex mt={4}>
-                        <SearchBar
-                            placeholder="Buscar por nome, CNPJ, e‑mail…"
-                            value={searchInput}
-                            onChange={e => setSearchInput(e.target.value)}
-                        />
-                    </Flex>
-                </CardHeader>
-                <Divider />
-                <CardBody>
-                    <TableContainer>
-                        <Table size="sm">
-                            <Thead position="sticky" top={0} zIndex={1}>
-                                <Tr>
-                                    <Th>Logo</Th>
-                                    <Th>Nome</Th>
-                                    <Th>Email</Th>
-                                    <Th>Razão social</Th>
-                                    <Th>Ramo</Th>
-                                    <Th>Tipo</Th>
-                                    <Th>Tamanho</Th>
-                                    <Th>CNPJ</Th>
-                                    <Th w={24}>Ações</Th>
+                <Flex mt={4}>
+                    <SearchBar
+                        placeholder="Buscar por nome, CNPJ, e‑mail…"
+                        value={searchInput}
+                        onChange={e => setSearchInput(e.target.value)}
+                    />
+                </Flex>
+            </CardHeader>
+            <Divider />
+            <CardBody>
+                <TableContainer>
+                    <Table size="sm">
+                        <Thead position="sticky" top={0} zIndex={1}>
+                            <Tr>
+                                <Th>Logo</Th>
+                                <Th>Nome</Th>
+                                <Th>Email</Th>
+                                <Th>Razão social</Th>
+                                <Th>Ramo</Th>
+                                <Th>Tipo</Th>
+                                <Th>Tamanho</Th>
+                                <Th>CNPJ</Th>
+                                <Th w={24}>Ações</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {isLoading && Array.from({ length: 6 }).map((_, i) => (
+                                <Tr key={`skeleton-${i}`}>
+                                    {Array.from({ length: 9 }).map((__, j) => (
+                                        <Td key={j}><Skeleton height="4" /></Td>
+                                    ))}
                                 </Tr>
-                            </Thead>
-                            <Tbody>
-                                {loading && Array.from({ length: 6 }).map((_, i) => (
-                                    <Tr key={`skeleton-${i}`}>
-                                        {Array.from({ length: 9 }).map((__, j) => (
-                                            <Td key={j}><Skeleton height="4" /></Td>
-                                        ))}
-                                    </Tr>
-                                ))}
+                            ))}
 
-                                {!loading && slice.length === 0 && (
-                                    <Tr>
-                                        <Td colSpan={9}>
-                                            <Flex py={8} direction="column" align="center" gap={2} color="muted">
-                                                <Heading size="sm">Nenhuma empresa encontrada</Heading>
-                                                <Text fontSize="sm">Ajuste a busca ou cadastre uma nova empresa.</Text>
-                                            </Flex>
-                                        </Td>
-                                    </Tr>
-                                )}
+                            {!isLoading && error && (
+                                <Tr>
+                                    <Td colSpan={9}>
+                                        <Flex py={8} direction="column" align="center" gap={3} color="red.500">
+                                            <Heading size="sm">Erro ao carregar empresas</Heading>
+                                            <Text fontSize="sm" textAlign="center">{error}</Text>
+                                            <Button size="sm" colorScheme="red" variant="outline" onClick={() => fetchCompanies()}>
+                                                Tentar novamente
+                                            </Button>
+                                        </Flex>
+                                    </Td>
+                                </Tr>
+                            )}
 
-                                {!loading && slice.map((company) => (
-                                    <Tr key={company.id}>
-                                        <Td>
-                                            <Avatar size="sm" src={company.file?.url} name={company.name} borderRadius="md" />
-                                        </Td>
-                                        <Td>{company.name}</Td>
-                                        <Td>{company.email}</Td>
-                                        <Td>{company.company_name}</Td>
-                                        <Td>{company.category?.name}</Td>
-                                        <Td>{company.type?.name}</Td>
-                                        <Td>{company.size?.name}</Td>
-                                        <Td><Badge variant="subtle">{company.cnpj}</Badge></Td>
-                                        <Td>
-                                            <HStack spacing={2}>
-                                                <Tooltip label="Editar">
-                                                    <IconButton aria-label="Editar" size="sm" colorScheme="blue" icon={<EditIcon />} onClick={() => navigate(`/empresas/${company.id}/editar`)} />
-                                                </Tooltip>
-                                                <Tooltip label="Excluir">
-                                                    <IconButton aria-label="Excluir" size="sm" colorScheme="red" icon={<DeleteIcon />} onClick={() => askDelete(company.id)} />
-                                                </Tooltip>
-                                            </HStack>
-                                        </Td>
-                                    </Tr>
-                                ))}
-                            </Tbody>
-                        </Table>
-                    </TableContainer>
+                            {!isLoading && !error && slice.length === 0 && (
+                                <Tr>
+                                    <Td colSpan={9}>
+                                        <Flex py={8} direction="column" align="center" gap={2} color="muted">
+                                            <Heading size="sm">Nenhuma empresa encontrada</Heading>
+                                            <Text fontSize="sm">Ajuste a busca ou cadastre uma nova empresa.</Text>
+                                        </Flex>
+                                    </Td>
+                                </Tr>
+                            )}
 
-                    {/* Paginação */}
-                    {!loading && Math.max(1, pages) > 1 && (
-                        <HStack justify="flex-end" mt={4} spacing={2}>
-                            <Button size="sm" variant="outline" onClick={() => setPage((p) => Math.max(1, p - 1))} isDisabled={page === 1}>Anterior</Button>
-                            <Text fontSize="sm">Página {page} de {pages}</Text>
-                            <Button size="sm" variant="outline" colorScheme="brand" onClick={() => setPage((p) => Math.min(pages, p + 1))} isDisabled={page === pages}>Próxima</Button>
-                        </HStack>
-                    )}
-                </CardBody>
-            </Content>
+                            {!isLoading && slice.map((company) => (
+                                <Tr key={company.id}>
+                                    <Td>
+                                        <Avatar size="sm" src={company.file?.url} name={company.name} borderRadius="md" />
+                                    </Td>
+                                    <Td>{company.name}</Td>
+                                    <Td>{company.email}</Td>
+                                    <Td>{company.company_name}</Td>
+                                    <Td>{company.category?.name}</Td>
+                                    <Td>{company.type?.name}</Td>
+                                    <Td>{company.size?.name}</Td>
+                                    <Td><Badge variant="subtle">{company.cnpj}</Badge></Td>
+                                    <Td>
+                                        <HStack spacing={2}>
+                                            <Tooltip label="Editar">
+                                                <IconButton aria-label="Editar" size="sm" colorScheme="blue" icon={<EditIcon />} onClick={() => navigate(`/admin/empresas/${company.id}/editar`)} />
+                                            </Tooltip>
+                                            <Tooltip label="Excluir">
+                                                <IconButton aria-label="Excluir" size="sm" colorScheme="red" icon={<DeleteIcon />} onClick={() => askDelete(company.id)} />
+                                            </Tooltip>
+                                        </HStack>
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
 
+                {/* Paginação */}
+                {!isLoading && Math.max(1, pages) > 1 && (
+                    <HStack justify="flex-end" mt={4} spacing={2}>
+                        <Button size="sm" variant="outline" onClick={() => setPage((p) => Math.max(1, p - 1))} isDisabled={page === 1}>Anterior</Button>
+                        <Text fontSize="sm">Página {page} de {pages}</Text>
+                        <Button size="sm" variant="outline" colorScheme="brand" onClick={() => setPage((p) => Math.min(pages, p + 1))} isDisabled={page === pages}>Próxima</Button>
+                    </HStack>
+                )}
+            </CardBody>
             {/* Modal de confirmação */}
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
                 <ModalOverlay />
@@ -251,11 +300,12 @@ export default function CompaniesList() {
                         <Text>Tem certeza de que deseja excluir permanentemente esta empresa? Esta ação não pode ser desfeita.</Text>
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme="red" mr={3} onClick={doDelete}>Deletar</Button>
+                        <Button colorScheme="red" mr={3} onClick={handleDeleteCompany}>Deletar</Button>
                         <Button variant="ghost" onClick={onClose}>Cancelar</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
-        </Layout>
+        </Content>
+
     )
 }

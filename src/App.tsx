@@ -21,14 +21,4 @@ function App() {
   )
 }
 
-//   return (
-//     <AuthProvider>
-//       <ChakraProvider theme={theme} toastOptions={{ defaultOptions: { position: "top-right" } }}>
-//         <ColorModeScript initialColorMode="light" />
-//         <Routes />
-//       </ChakraProvider>
-//     </AuthProvider >
-//   )
-// }
-
 export default App

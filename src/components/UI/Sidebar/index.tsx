@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { LogoImage } from "../Logo";
 import ToggleThemeButton from "../ToggleThemeButton";
+import { useAuth } from "../../../providers/AuthProvider";
 
 /**
  * Sidebar — sem props. Responsivo e minimizável.
@@ -45,7 +46,7 @@ import ToggleThemeButton from "../ToggleThemeButton";
  */
 
 // ========= Tipos =========
-export type Role = "candidate" | "company" | "admin" | "dev";
+export type Role = "CANDIDATE" | "COMPANY" | "ADMIN";
 export type NavItem = {
     path: string;
     label: string;
@@ -55,82 +56,50 @@ export type NavItem = {
     id?: string;
 };
 
-// ========= Itens de DEV (todos) =========
-const navItemsDEV: NavItem[] = [
-    { path: "/candidato/home", label: "Tela de início", icon: LuUsers, legend: "Início", role: "candidate" },
-    { path: "/candidato/curriculo", label: "Meu Currículo", icon: LuFileText, legend: "Meu Currículo", role: "candidate", id: "tour-meu-curriculo" },
-    { path: "/candidato/editar-curriculo", label: "Editar Currículo", icon: LuFilePen, legend: "Editar Currículo", role: "candidate", id: "tour-editar-curriculo" },
-    { path: "/candidato/video-curriculo", label: "Vídeo Currículo", icon: LuFileVideo2, legend: "Vídeo Currículo", role: "candidate", id: "tour-video-curriculo" },
-    { path: "/candidato/ver-vagas", label: "Ver Vagas", icon: LuBriefcaseBusiness, legend: "Ver Vagas", role: "candidate", id: "tour-ver-vagas" },
-    { path: "/candidato/minhas-vagas", label: "Minhas Vagas", icon: LuBriefcase, legend: "Minhas Vagas", role: "candidate", id: "tour-minhas-vagas" },
-    { path: "/admin/empresas", label: "Empresas", icon: LuBuilding, legend: "Empresas", role: "admin" },
-    { path: "/admin/beneficios", label: "Benefícios", icon: LuGift, legend: "Benefícios", role: "admin" },
-    { path: "/admin/cargos", label: "Cargos", icon: LuWalletCards, legend: "Cargos", role: "admin" },
-    { path: "/admin/tags", label: "Tags", icon: LucideTags, legend: "Tags", role: "admin" },
-    { path: "/empresa/candidatos", label: "Candidatos", icon: LuUsers, legend: "Candidatos", role: "company" },
-    { path: "/empresa/processos-seletivos", label: "Processos Seletivos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "company" }
-]
-
 // ========= Fonte dos itens =========
 const navItemsCandidate: NavItem[] = [
-    { path: "/candidato/curriculo", label: "Meu Currículo", icon: LuFileText, legend: "Meu Currículo", role: "candidate", id: "tour-meu-curriculo" },
-    { path: "/candidato/editar-curriculo", label: "Editar Currículo", icon: LuFilePen, legend: "Editar Currículo", role: "candidate", id: "tour-editar-curriculo" },
-    { path: "/candidato/video-curriculo", label: "Vídeo Currículo", icon: LuFileVideo2, legend: "Vídeo Currículo", role: "candidate", id: "tour-video-curriculo" },
-    { path: "/candidato/ver-vagas", label: "Ver Vagas", icon: LuBriefcaseBusiness, legend: "Ver Vagas", role: "candidate", id: "tour-ver-vagas" },
-    { path: "/candidato/minhas-vagas", label: "Minhas Vagas", icon: LuBriefcase, legend: "Minhas Vagas", role: "candidate", id: "tour-minhas-vagas" },
+    { path: "/candidato/curriculo", label: "Meu Currículo", icon: LuFileText, legend: "Meu Currículo", role: "CANDIDATE", id: "tour-meu-curriculo" },
+    { path: "/candidato/editar-curriculo", label: "Editar Currículo", icon: LuFilePen, legend: "Editar Currículo", role: "CANDIDATE", id: "tour-editar-curriculo" },
+    { path: "/candidato/video-curriculo", label: "Vídeo Currículo", icon: LuFileVideo2, legend: "Vídeo Currículo", role: "CANDIDATE", id: "tour-video-curriculo" },
+    { path: "/candidato/ver-vagas", label: "Ver Vagas", icon: LuBriefcaseBusiness, legend: "Ver Vagas", role: "CANDIDATE", id: "tour-ver-vagas" },
+    { path: "/candidato/minhas-vagas", label: "Minhas Vagas", icon: LuBriefcase, legend: "Minhas Vagas", role: "CANDIDATE", id: "tour-minhas-vagas" },
 ];
 
 const navItemsCompany: NavItem[] = [
-    { path: "/processos-seletivos", label: "Processos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "company" },
-    { path: "/empresa/candidatos", label: "Candidatos", icon: LuUsers, legend: "Candidatos", role: "company" },
-    { path: "/admin/beneficios", label: "Benefícios", icon: LuGift, legend: "Benefícios", role: "company" },
-    { path: "/admin/cargos", label: "Cargos", icon: LuWalletCards, legend: "Cargos", role: "company" },
-    { path: "/admin/tags", label: "Tags", icon: LucideTags, legend: "Tags", role: "company" },
-    { path: "/empresa/processos-seletivos", label: "Processos Seletivos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "company" }
+    { path: "/processos-seletivos", label: "Processos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "COMPANY" },
+    { path: "/empresa/candidatos", label: "Candidatos", icon: LuUsers, legend: "Candidatos", role: "COMPANY" },
+    { path: "/admin/beneficios", label: "Benefícios", icon: LuGift, legend: "Benefícios", role: "COMPANY" },
+    { path: "/admin/cargos", label: "Cargos", icon: LuWalletCards, legend: "Cargos", role: "COMPANY" },
+    { path: "/admin/tags", label: "Tags", icon: LucideTags, legend: "Tags", role: "COMPANY" },
+    { path: "/empresa/processos-seletivos", label: "Processos Seletivos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "COMPANY" }
 ];
 
 const navItemsAdmin: NavItem[] = [
-    { path: "/admin/empresas", label: "Empresas", icon: LuBuilding, legend: "Empresas", role: "admin" },
-    { path: "/admin/cargos", label: "Cargos", icon: LuWalletCards, legend: "Cargos", role: "admin" },
-    { path: "/admin/beneficios", label: "Benefícios", icon: LuGift, legend: "Benefícios", role: "admin" },
+    { path: "/admin/empresas", label: "Empresas", icon: LuBuilding, legend: "Empresas", role: "ADMIN" },
+    { path: "/admin/cargos", label: "Cargos", icon: LuWalletCards, legend: "Cargos", role: "ADMIN" },
+    { path: "/admin/beneficios", label: "Benefícios", icon: LuGift, legend: "Benefícios", role: "ADMIN" },
 ];
 
 function getItemsByRole(role: Role): NavItem[] {
     switch (role) {
-        case "company":
+        case "COMPANY":
             return navItemsCompany;
-        case "admin":
+        case "ADMIN":
             return navItemsAdmin;
-        case "candidate":
+        case "CANDIDATE":
             return navItemsCandidate;
         default:
-            return navItemsDEV;
+            return navItemsCandidate;
     }
 }
 
-// ========= Origem do role =========
-function useCurrentRole(): Role {
-    const [role, setRole] = useState<Role>(() => {
-        const saved = (typeof window !== "undefined" && localStorage.getItem("gt.role")) as Role | null;
-        return saved ?? "dev";
-    });
-    useEffect(() => {
-        const handler = () => {
-            const saved = (localStorage.getItem("gt.role") as Role | null) ?? "dev";
-            setRole(saved);
-        };
-        window.addEventListener("storage", handler);
-        return () => window.removeEventListener("storage", handler);
-    }, []);
-    return role;
-}
+
 
 // ========= Item =========
 const roleColorMap: Record<Role, { base: string; rgba: string }> = {
-    candidate: { base: "blue.500", rgba: "rgba(49, 130, 206, 0.12)" }, // blue.500 Chakra: #3182ce
-    admin: { base: "purple.500", rgba: "rgba(128, 90, 213, 0.12)" }, // purple.500: #805ad5
-    company: { base: "orange.500", rgba: "rgba(237, 137, 54, 0.12)" }, // orange.500: #ed8936
-    dev: { base: "gray.500", rgba: "rgba(113, 128, 150, 0.12)" }, // gray.500: #718096
+    CANDIDATE: { base: "blue.500", rgba: "rgba(49, 130, 206, 0.12)" }, // blue.500 Chakra: #3182ce
+    ADMIN: { base: "purple.500", rgba: "rgba(128, 90, 213, 0.12)" }, // purple.500: #805ad5
+    COMPANY: { base: "orange.500", rgba: "rgba(237, 137, 54, 0.12)" }, // orange.500: #ed8936
 };
 
 function SidebarItem({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
@@ -139,7 +108,7 @@ function SidebarItem({ item, collapsed }: { item: NavItem; collapsed: boolean })
     const isActive = !!match;
 
     // Cor baseada no role do item
-    const itemRole = item.role ?? "dev";
+    const itemRole = item.role ?? "CANDIDATE";
 
     const roleColor = roleColorMap[itemRole].base;
     const roleBg = roleColorMap[itemRole].rgba;
@@ -204,9 +173,36 @@ const LS_COLLAPSE = "gt.sidebar.collapsed";
 const MotionBox = motion(Box);
 
 export default function Sidebar() {
-    const role = useCurrentRole();
+    const { name, profile, logout } = useAuth();
+    const navigate = useNavigate();
+
+    // Usa o profile diretamente do contexto, com fallback para CANDIDATE
+    // Usa o profile diretamente do contexto, com validação de segurança
+    const role: Role = (profile && ["CANDIDATE", "COMPANY", "ADMIN"].includes(profile)) ? profile as Role : "CANDIDATE";
     const items = useMemo(() => getItemsByRole(role), [role]);
     const isDesktop = useBreakpointValue({ base: false, lg: true });
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    const getUserDisplayName = () => {
+        return name || "Usuário";
+    };
+
+    const getRoleDisplayName = (role: string | null) => {
+        switch (role?.toUpperCase()) {
+            case "CANDIDATE":
+                return "CANDIDATO";
+            case "COMPANY":
+                return "EMPRESA";
+            case "ADMIN":
+                return "ADMINISTRADOR";
+            default:
+                return "USUÁRIO";
+        }
+    };
 
     const [collapsed, setCollapsed] = useState(false);
     useEffect(() => {
@@ -255,11 +251,11 @@ export default function Sidebar() {
                     <Menu placement="top-start">
                         <ChakraLink as={Link} to="/candidato/perfil" fontSize="xs" color="brand.600" _dark={{ color: "brand.300" }} _hover={{ textDecoration: "underline" }} display="flex" alignItems="center" mt={0.5}>
                             <HStack spacing={collapsed ? 0 : 3}>
-                                <Avatar size={collapsed ? "sm" : "md"} name="Alexandre D." src="https://randomuser.me/api/portraits/men/32.jpg" />
+                                <Avatar size={collapsed ? "sm" : "md"} name={getUserDisplayName()} />
                                 {!collapsed && (
                                     <Box textAlign="left">
-                                        <Text fontWeight={600} fontSize="sm" noOfLines={1} maxW={36}>NOME DO USUARIO</Text>
-                                        CANDIDATO
+                                        <Text fontWeight={600} fontSize="sm" noOfLines={1} maxW={36}>{getUserDisplayName()}</Text>
+                                        <Text fontSize="xs" color="muted">{getRoleDisplayName(profile)}</Text>
                                     </Box>
                                 )}
                             </HStack>
@@ -269,7 +265,7 @@ export default function Sidebar() {
                 <Flex align="center" flexDir={collapsed ? "column" : "row"} justify="center" px={collapsed ? 0 : 2} gap={2}>
                     <ToggleThemeButton variant="outline" />
                     <Tooltip hasArrow placement="right" label="Sair" openDelay={300}>
-                        <IconButton aria-label="Sair" size="sm" variant="outline" icon={<LogOut size={18} />} onClick={() => { /* TODO: logout */ }} />
+                        <IconButton aria-label="Sair" size="sm" variant="outline" icon={<LogOut size={18} />} onClick={handleLogout} />
                     </Tooltip>
                 </Flex>
                 <Text display={collapsed ? "none" : "block"} fontSize="xs" color="muted" px={2} textAlign="center" mt={2}>© 2024 Great Talents. Todos os direitos reservados.</Text>
@@ -325,33 +321,31 @@ export default function Sidebar() {
                     {items.map((it) => (<SidebarItem key={it.path} item={it} collapsed={false} />))}
                 </Stack>
             </Box>
-            <Box px={collapsed ? 1 : 3} pb={3} mt="auto" w="full">
+            <Box px={3} pb={3} mt="auto" w="full">
                 <Divider mb={2} />
-                <Flex align="center" mb={collapsed ? 2 : 3} px={collapsed ? 0 : 2} justify={collapsed ? "center" : "flex-start"}>
+                <Flex align="center" mb={3} px={2} justify="flex-start">
                     <Menu placement="top-start">
                         <ChakraLink as={Link} to="/candidato/perfil" fontSize="xs" color="brand.600" _dark={{ color: "brand.300" }} _hover={{ textDecoration: "underline" }} display="flex" alignItems="center" mt={0.5}>
-                            <HStack spacing={collapsed ? 0 : 3}>
-                                <Avatar size={collapsed ? "sm" : "md"} name="Alexandre D." src="https://randomuser.me/api/portraits/men/32.jpg" />
-                                {!collapsed && (
-                                    <Box textAlign="left">
-                                        <Text fontWeight={600} fontSize="sm" noOfLines={1} maxW={36}>NOME DO USUARIO</Text>
-                                        CANDIDATO
-                                    </Box>
-                                )}
+                            <HStack spacing={3}>
+                                <Avatar size="md" name={getUserDisplayName()} />
+                                <Box textAlign="left">
+                                    <Text fontWeight={600} fontSize="sm" noOfLines={1} maxW={36}>{getUserDisplayName()}</Text>
+                                    <Text fontSize="xs" color="muted">{getRoleDisplayName(profile)}</Text>
+                                </Box>
                             </HStack>
                         </ChakraLink>
                     </Menu>
                 </Flex>
-                <Flex align="center" flexDir={collapsed ? "column" : "row"} justify="center" px={collapsed ? 0 : 2} gap={2}>
+                <Flex align="center" flexDir="row" justify="center" px={2} gap={2}>
                     <ToggleThemeButton label="Tema" variant="outline" />
                     <Tooltip hasArrow placement="right" label="Sair" openDelay={300}>
                         <Flex align="center" gap={2}>
-                            <IconButton aria-label="Sair" size="sm" variant="outline" icon={<LogOut size={18} />} onClick={() => { /* TODO: logout */ }} />
-                            {!collapsed && <Text fontSize="sm" color="muted">Sair</Text>}
+                            <IconButton aria-label="Sair" size="sm" variant="outline" icon={<LogOut size={18} />} onClick={handleLogout} />
+                            <Text fontSize="sm" color="muted">Sair</Text>
                         </Flex>
                     </Tooltip>
                 </Flex>
-                {!collapsed && (<Text fontSize="xs" color="muted" px={2} textAlign="center" mt={2}>v1.0 • Great Talents</Text>)}
+                <Text fontSize="xs" color="muted" px={2} textAlign="center" mt={2}>v1.0 • Great Talents</Text>
             </Box>
         </Box>
     );
