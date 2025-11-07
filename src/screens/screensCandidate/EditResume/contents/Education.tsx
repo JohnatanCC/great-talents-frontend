@@ -1,7 +1,6 @@
 import {
     Alert,
     AlertIcon,
-    Box,
     Card,
     CardBody,
     CardHeader,
@@ -65,7 +64,7 @@ export const Education = () => {
     }, []);
 
     return (
-        <Card>
+        <Card >
             <CardHeader>
                 <HStack justify="space-between" align="center">
                     <Heading size="lg">Formação acadêmica</Heading>

@@ -13,8 +13,8 @@ import {
     useToast,
     type ButtonProps,
 } from "@chakra-ui/react";
-import { useEffect, useState, type KeyboardEvent } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { toastTemplate } from "@/templates/toast";
@@ -31,7 +31,7 @@ interface EducationForm {
     course: string;
     startDate: string;
     endDate: string;
-    educationStatus: SelectOption;
+    educationStatus: SelectOption | null;
     description: string;
 }
 
@@ -46,23 +46,22 @@ const ModalForm: React.FC<{
 
     const {
         register,
+        control,
         setValue,
         handleSubmit,
         formState: { errors, isSubmitting },
-        watch,
     } = useForm<EducationForm>({
         defaultValues: {
             institution: "",
             course: "",
             startDate: "",
             endDate: "",
-            educationStatus: { label: "", value: "" },
+            educationStatus: null,
             description: "",
         },
-        resolver: yupResolver(validationNewEducationForm),
+        resolver: (yupResolver(validationNewEducationForm) as any),
     });
-    const handleChangeSelect = (name: keyof EducationForm, value: SelectOption) =>
-        setValue(name, value);
+
 
     const onSubmit: SubmitHandler<EducationForm> = async (data) => {
         try {
@@ -73,7 +72,7 @@ const ModalForm: React.FC<{
                 course: data.course,
                 start_date: data.startDate,
                 end_date: data.endDate,
-                formation_status: data.educationStatus.value,
+                formation_status: data.educationStatus?.value ?? "",
                 description: data.description,
             };
 
@@ -163,19 +162,25 @@ const ModalForm: React.FC<{
                             </GridItem>
 
                             <GridItem colSpan={{ base: 1, md: 2 }}>
-                                <SelectForm
-                                    {...register("educationStatus")}
-                                    label="Status da educação"
-                                    placeholder="Selecione um status"
-
-                                    options={[
-                                        { label: "Cursando", value: "CURSANDO" },
-                                        { label: "Completo", value: "COMPLETO" },
-                                        { label: "Incompleto", value: "INCOMPLETO" },
-                                        { label: "Trancado", value: "TRANCADO" },
-                                    ]}
-                                    onChangeSelect={handleChangeSelect}
-                                    errorMessage={errors.educationStatus?.message}
+                                <Controller
+                                    name="educationStatus"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <SelectForm
+                                            {...(field as any)}
+                                            value={field.value ?? null}
+                                            label="Status da educação"
+                                            placeholder="Selecione um status"
+                                            options={[
+                                                { label: "Cursando", value: "CURSANDO" },
+                                                { label: "Completo", value: "COMPLETO" },
+                                                { label: "Incompleto", value: "INCOMPLETO" },
+                                                { label: "Trancado", value: "TRANCADO" },
+                                            ]}
+                                            onChangeSelect={(_n: any, opt: SelectOption) => field.onChange(opt)}
+                                            errorMessage={errors.educationStatus?.message}
+                                        />
+                                    )}
                                 />
                             </GridItem>
 

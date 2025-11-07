@@ -5,10 +5,9 @@ import {
     Flex,
     Heading,
     HStack,
-    Icon,
+    IconButton,
     Tag,
-    Text,
-    useColorModeValue,
+    Tooltip,
     useDisclosure,
     useToast,
     AlertDialog,
@@ -18,30 +17,20 @@ import {
     AlertDialogBody,
     AlertDialogFooter,
 } from "@chakra-ui/react";
-import { Trash2, Pencil } from "lucide-react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useRef } from "react";
 import CandidateSoftwareService from "../../../../services/Candidate/CandidateSoftwareService";
 import { toastTemplate } from "../../../../templates/toast";
 import type { SoftwareState } from "@/types/Softwares.types";
+import { getLevelColorScheme } from "@/utils/levelColors";
 
 interface SoftwareCardProps {
     software: SoftwareState;
-    refresh: VoidFunction;
+    onRefresh: VoidFunction;
 }
 
-const levelColor = (lvl?: string) => {
-    const v = (lvl || "").toLowerCase();
-    if (v.includes("inic") || v.includes("basic")) return "gray";
-    if (v.includes("inter")) return "yellow";
-    if (v.includes("avan") || v.includes("advanced")) return "purple";
-    if (v.includes("flu") || v.includes("expert")) return "green";
-    return "blue";
-};
-
-export const SoftwaresCard: React.FC<SoftwareCardProps> = ({ software, refresh }) => {
+export const SoftwaresCard: React.FC<SoftwareCardProps> = ({ software, onRefresh }) => {
     const toast = useToast();
-    const border = useColorModeValue("stone.200", "stone.800");
-    const surf = useColorModeValue("surface", "surface");
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = useRef<HTMLButtonElement | null>(null);
@@ -55,7 +44,7 @@ export const SoftwaresCard: React.FC<SoftwareCardProps> = ({ software, refresh }
                     status: "success",
                 })
             );
-            refresh();
+            onRefresh();
         } catch {
             toast(
                 toastTemplate({
@@ -70,7 +59,8 @@ export const SoftwaresCard: React.FC<SoftwareCardProps> = ({ software, refresh }
 
     return (
         <>
-            <Card bg={surf} borderWidth="1px" borderColor={border} size="sm" pos="relative" overflow="hidden">
+            <Card borderWidth="1px" size="sm" pos="relative" overflow="hidden" borderColor="border"
+                bg="surfaceSubtle">
                 <CardHeader display="flex" alignItems="center" gap={3}>
                     <Flex w="100%" direction="column">
                         <HStack spacing={2} align="baseline">
@@ -78,7 +68,7 @@ export const SoftwaresCard: React.FC<SoftwareCardProps> = ({ software, refresh }
                                 {software.name}
                             </Heading>
                             {software.level && (
-                                <Tag size="sm" colorScheme={levelColor(software.level)} variant="subtle">
+                                <Tag size="sm" colorScheme={getLevelColorScheme(software.level)} variant="subtle">
                                     {software.level}
                                 </Tag>
                             )}
@@ -86,18 +76,26 @@ export const SoftwaresCard: React.FC<SoftwareCardProps> = ({ software, refresh }
                     </Flex>
 
                     <HStack spacing={2}>
-                        {/* editar desabilitado por enquanto; conecte quando houver tela */}
-                        <Button size="sm" variant="outline" leftIcon={<Icon as={Pencil} />} isDisabled>
-                            Editar
-                        </Button>
-                        <Button
-                            size="sm"
-                            colorScheme="red"
-                            leftIcon={<Icon as={Trash2} />}
-                            onClick={onOpen}
-                        >
-                            Remover
-                        </Button>
+                        <Tooltip label="Editar">
+                            <IconButton
+                                aria-label="Editar software"
+                                icon={<EditIcon />}
+                                size="sm"
+                                variant="ghost"
+                                colorScheme="blue"
+                                isDisabled
+                            />
+                        </Tooltip>
+                        <Tooltip label="Excluir">
+                            <IconButton
+                                aria-label="Excluir software"
+                                icon={<DeleteIcon />}
+                                size="sm"
+                                variant="ghost"
+                                colorScheme="red"
+                                onClick={onOpen}
+                            />
+                        </Tooltip>
                     </HStack>
                 </CardHeader>
             </Card>
@@ -105,7 +103,7 @@ export const SoftwaresCard: React.FC<SoftwareCardProps> = ({ software, refresh }
             {/* Confirmação de exclusão */}
             <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                 <AlertDialogOverlay />
-                <AlertDialogContent bg={surf}>
+                <AlertDialogContent>
                     <AlertDialogHeader fontWeight="bold">
                         Remover habilidade
                     </AlertDialogHeader>

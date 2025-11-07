@@ -78,11 +78,9 @@ export const ExperienceCard: React.FC<ExperienceCardProps> = ({
     return (
         <>
             <Card
-                bg="surface"
                 borderWidth="1px"
                 borderColor="border"
-                _hover={{ borderColor: "brand.400" }}
-                transition="border-color 0.15s ease"
+                bg="surfaceSubtle"
                 size="sm"
             >
                 <CardHeader pb={2}>
@@ -102,7 +100,7 @@ export const ExperienceCard: React.FC<ExperienceCardProps> = ({
                                     aria-label="Editar experiência"
                                     size="sm"
                                     variant="ghost"
-                                    colorScheme="brand"
+                                    colorScheme="blue"
                                     icon={<EditIcon />}
                                     onClick={() => handleEdit(experience.id)}
                                 />

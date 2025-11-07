@@ -36,101 +36,6 @@ import type { StateProfile } from "@/types/curriculum.types";
 import Content from "@/components/UI/Content";
 import Layout from "@/Layout";
 
-/* ======================== Mock Data (toggle) ======================== */
-const mockProfile: StateProfile = {
-    name: "João Silva Santos",
-    email: "joao.silva@email.com",
-    contact: "(11) 99999-9999",
-    resume:
-        "Desenvolvedor Full Stack com mais de 5 anos de experiência em React, Node.js e TypeScript. Apaixonado por criar soluções inovadoras e trabalhar em equipe. Sempre em busca de novos desafios e oportunidades de crescimento profissional.",
-    url_foto:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    video_curriculum_link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    address: {
-        cep: "01310-100",
-        street: "Rua das Flores",
-        number: "123",
-        neighborhood: "Centro",
-        city: "São Paulo",
-        state: "SP",
-        complement: "Apto 45",
-    },
-    pcd: { is_pcd: true, pcd_description: "Deficiência visual parcial" },
-    experiences: [
-        {
-            id: 1,
-            candidate_id: 1,
-            company_name: "Tech Solutions Ltda",
-            position: "Desenvolvedor Frontend Sênior",
-            start: "2022-01-15",
-            end: "2024-12-01",
-            current: false,
-            description: "Desenvolvimento de aplicações React",
-            state: "SP",
-            city: "São Paulo",
-            created_at: "2024-01-01T00:00:00Z",
-            updated_at: "2024-01-01T00:00:00Z",
-        },
-        {
-            id: 2,
-            candidate_id: 1,
-            company_name: "Digital Innovations",
-            position: "Desenvolvedor Full Stack",
-            start: "2020-03-10",
-            end: "2021-12-20",
-            current: false,
-            description: "Desenvolvimento de APIs e interfaces",
-            state: "SP",
-            city: "São Paulo",
-            created_at: "2024-01-01T00:00:00Z",
-            updated_at: "2024-01-01T00:00:00Z",
-        },
-        {
-            id: 3,
-            candidate_id: 1,
-            company_name: "StartupXYZ",
-            position: "Desenvolvedor Junior",
-            start: "2019-06-01",
-            end: "2020-02-28",
-            current: false,
-            description: "Primeiro emprego como desenvolvedor",
-            state: "SP",
-            city: "São Paulo",
-            created_at: "2024-01-01T00:00:00Z",
-            updated_at: "2024-01-01T00:00:00Z",
-        },
-    ],
-    educations: [
-        {
-            id: 1,
-            institution: "Universidade de São Paulo",
-            course: "Ciência da Computação",
-            formation_status: "Concluído",
-            start_date: "2015-02-01",
-            end_date: "2018-12-15",
-            description: "Bacharelado em Ciência da Computação",
-            candidate_id: 1,
-            created_at: "2024-01-01T00:00:00Z",
-            updated_at: "2024-01-01T00:00:00Z",
-        },
-        {
-            id: 2,
-            institution: "Rocketseat",
-            course: "Ignite React",
-            formation_status: "Concluído",
-            start_date: "2021-01-10",
-            end_date: "2021-06-30",
-            description: "Curso especializado em React",
-            candidate_id: 1,
-            created_at: "2024-01-01T00:00:00Z",
-            updated_at: "2024-01-01T00:00:00Z",
-        },
-    ],
-    softwares: [],
-    languages: [],
-};
-const USE_MOCK = true;
-
 /* ======================== Helpers ======================== */
 const fDate = (iso?: string) =>
     iso ? format(parseISO(iso), "dd/MM/yyyy", { locale: ptBR }) : "—";
@@ -217,22 +122,22 @@ const Resume = () => {
     const params = useParams();
     const navigate = useNavigate();
 
-    const [profile, setProfile] = useState<StateProfile | null>(USE_MOCK ? mockProfile : null);
-    const loading = !profile;
+    const [profile, setProfile] = useState<StateProfile | null>(null);
+    const loading = profile === null;
 
     useEffect(() => {
-        if (USE_MOCK) return;
-        (async () => {
-            try {
-                const data = params.id
-                    ? await CandidateCurriculumService.findByCandidateId(params.id)
-                    : await CandidateCurriculumService.findMyCurriculum();
-                setProfile(data);
-            } catch {
-                toast(toastTemplate({ status: "error", description: "Erro ao buscar currículo" }));
-            }
-        })();
-    }, []);
+        let mounted = true;
+        if (params.id) {
+            CandidateCurriculumService.findByCandidateId(params.id)
+                .then((data) => { if (mounted) setProfile(data); })
+                .catch(() => toast(toastTemplate({ status: "error", description: "Erro ao buscar currículo" })));
+        } else {
+            CandidateCurriculumService.findMyCurriculum()
+                .then((data) => { if (mounted) setProfile(data); })
+                .catch(() => toast(toastTemplate({ status: "error", description: "Erro ao buscar currículo" })));
+        }
+        return () => { mounted = false }
+    }, [params.id, toast]);
 
     const avatarRing = useColorModeValue("white", "stone.900");
     const glassBg = useColorModeValue("rgba(255,255,255,0.55)", "rgba(28,25,23,0.45)");

@@ -2,7 +2,6 @@ import {
     Alert,
     AlertIcon,
     Box,
-    Button,
     Card,
     CardBody,
     CardHeader,
@@ -11,7 +10,6 @@ import {
     HStack,
     SimpleGrid,
     Skeleton,
-    SkeletonText,
     Text,
     useColorModeValue,
     useToast,
@@ -73,19 +71,10 @@ export const Software: React.FC = () => {
 
                 <SoftwaresModalContainer refresh={getCandidateSoftwares} />
 
-                {/* Loading */}
                 {loading ? (
                     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
                         {Array.from({ length: 3 }).map((_, i) => (
-                            <Box key={i} borderWidth="1px" borderColor={border} rounded="lg" p={4}>
-                                <Skeleton height="18px" w="60%" />
-                                <Skeleton height="16px" mt={2} w="40%" />
-                                <SkeletonText mt={4} noOfLines={3} spacing="3" />
-                                <HStack mt={4} spacing={3}>
-                                    <Skeleton height="36px" w="110px" />
-                                    <Skeleton height="36px" w="100px" />
-                                </HStack>
-                            </Box>
+                            <Skeleton key={i} height="100px" borderRadius="md" />
                         ))}
                     </SimpleGrid>
                 ) : softwares.length === 0 ? (
@@ -101,7 +90,7 @@ export const Software: React.FC = () => {
                             <SoftwaresCard
                                 key={software.id}
                                 software={software}
-                                refresh={getCandidateSoftwares}
+                                onRefresh={getCandidateSoftwares}
                             />
                         ))}
                     </SimpleGrid>

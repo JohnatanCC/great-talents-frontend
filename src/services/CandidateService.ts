@@ -1,15 +1,15 @@
 
-import { BodyCreateNewCandidate, ResponseFindAllCandidates } from "../types/candidates.types";
+import type { BodyCreateNewCandidate, ResponseFindAllCandidates } from "../types/candidates.types";
 import api from "./api";
 
 class CandidateService {
 
     private endpoint = 'candidates';
 
-    async findAll(){
+    async findAll() {
         const response = await api.get(`/${this.endpoint}`)
         return response.data as ResponseFindAllCandidates
-    }  
+    }
 
     async create(data: BodyCreateNewCandidate) {
         const formData = new FormData()
@@ -17,11 +17,11 @@ class CandidateService {
         if (data.photo) {
             formData.append('photo', data.photo);
         }
-        
+
         formData.append('name', data.name)
         formData.append('email', data.email)
         formData.append('password', data.password)
-     
+
         formData.append('contact', data.contact)
         formData.append('cep', data.cep)
         formData.append('city', data.city)
@@ -29,7 +29,7 @@ class CandidateService {
         formData.append('state', data.state.value.toString())
         formData.append('number', data.number)
         formData.append('neighborhood', data.neighborhood)
-     
+
         formData.append('date_birth', data.date_birth)
         formData.append('street', data.street)
         formData.append('genre', data.genre.value.toString())
@@ -42,7 +42,7 @@ class CandidateService {
         formData.append('position', data.position)
         formData.append('start', data.start)
         formData.append('end', data.end)
-        
+
 
 
         const response = await api.post('candidates', formData, {
@@ -52,7 +52,7 @@ class CandidateService {
         })
         return response.data
     }
-    
+
 }
 
 export default new CandidateService();

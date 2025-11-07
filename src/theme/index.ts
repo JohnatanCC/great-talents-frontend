@@ -77,7 +77,7 @@ const semanticTokens = {
         bg: { default: "stone.100", _dark: "stone.950" },
         surface: { default: "white", _dark: "stone.900" },
         surfaceSubtle: { default: "stone.100", _dark: "stone.800" },
-        border: { default: "stone.200", _dark: "stone.800" },
+        border: { default: "stone.300", _dark: "stone.700" },
         text: { default: "stone.800", _dark: "stone.100" },
         muted: { default: "stone.600", _dark: "stone.300" },
         ring: { default: "stone.300", _dark: "stone.600" },

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import { useState } from "react"
 import {
     Box,
     Button,
@@ -18,7 +18,6 @@ import {
     Switch,
     Text,
     useColorMode,
-    useColorModeValue,
     useToast,
 } from "@chakra-ui/react"
 import { ArrowBackIcon, ArrowForwardIcon, CheckIcon, MoonIcon, SunIcon } from "@chakra-ui/icons"
@@ -26,6 +25,9 @@ import { FormProvider, useForm, Controller, type SubmitHandler } from "react-hoo
 import { yupResolver } from "@hookform/resolvers/yup"
 import ReCaptchaField from "@/components/UI/ReCaptchaField";
 import * as yup from "yup"
+import { useNavigate } from "react-router-dom"
+import CandidateService from "@/services/CandidateService"
+import { toastTemplate } from "@/templates/toast"
 
 // ====== SEUS COMPONENTES CUSTOMIZADOS ======
 import LOGO from "@/assets/system_logo.png"
@@ -192,19 +194,51 @@ export default function Register() {
     }
     const back = () => setStep((s) => Math.max(s - 1, 0))
 
+    const navigate = useNavigate()
+
     // Submit final
     const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
         if (!recaptchaToken) {
             toast({ title: "Valide o reCAPTCHA", status: "warning" });
             return;
         }
-        // Envie também o token ao backend para verificação no Google
-        await new Promise((r) => setTimeout(r, 1000));
-        console.log("REGISTER", { ...data, recaptchaToken });
-        toast({ title: "Cadastro concluído!", status: "success" });
+
+        // se informou empresa na última experiência, exige cargo e data de início
+        if (data.company_name?.trim()) {
+            if (!data.position?.trim() || !data.start) {
+                toast(
+                    toastTemplate({
+                        title:
+                            "Por favor, preencha os campos de cargo e data de início na última experiência.",
+                        status: "warning",
+                    })
+                )
+                return
+            }
+        }
+
+        try {
+            // envia payload semelhante ao código antigo; inclui recaptchaToken
+            await CandidateService.create({ ...data, recaptchaToken } as any)
+
+            toast(
+                toastTemplate({
+                    title: "Cadastro realizado com sucesso!",
+                    status: "success",
+                })
+            )
+            navigate("/")
+        } catch (e) {
+            toast(
+                toastTemplate({
+                    title: "Erro ao cadastrar",
+                    status: "error",
+                })
+            )
+        }
     }
 
-    const surface = useColorModeValue("surface", "surface")
+
 
     return (
         <Flex minH="100vh" bg="bg" color="text">
@@ -292,8 +326,9 @@ export default function Register() {
                                                 <Controller name="genre" control={control} render={({ field }) => (
                                                     <FormControl isRequired isInvalid={!!errors.genre}>
                                                         <FormLabel>Gênero</FormLabel>
-                                                        <SelectForm {...field} label="" options={GENDER_OPTS} placeholder="Selecione"
-                                                            onChangeSelect={(name: any, opt: any) => field.onChange(opt)} errorMessage={errors.genre?.message as any} />
+                                                        <SelectForm {...(field as any)} label="" options={GENDER_OPTS} placeholder="Selecione"
+                                                            value={field.value ?? null}
+                                                            onChangeSelect={(_name: any, opt: any) => field.onChange(opt)} errorMessage={errors.genre?.message as any} />
                                                         <FormErrorMessage>{errors.genre?.message as any}</FormErrorMessage>
                                                     </FormControl>
                                                 )} />
@@ -315,8 +350,9 @@ export default function Register() {
                                                 <Controller name="education" control={control} render={({ field }) => (
                                                     <FormControl isRequired isInvalid={!!errors.education}>
                                                         <FormLabel>Escolaridade</FormLabel>
-                                                        <SelectForm {...field} label="" options={EDUCATION_OPTS} placeholder="Selecione"
-                                                            onChangeSelect={(name: any, opt: any) => field.onChange(opt)} errorMessage={errors.education?.message as any} />
+                                                        <SelectForm {...(field as any)} label="" options={EDUCATION_OPTS} placeholder="Selecione"
+                                                            value={field.value ?? null}
+                                                            onChangeSelect={(_name: any, opt: any) => field.onChange(opt)} errorMessage={errors.education?.message as any} />
                                                         <FormErrorMessage>{errors.education?.message as any}</FormErrorMessage>
                                                     </FormControl>
                                                 )} />
@@ -337,8 +373,9 @@ export default function Register() {
                                                     <Controller name="state" control={control} render={({ field }) => (
                                                         <FormControl isRequired isInvalid={!!errors.state}>
                                                             <FormLabel>Estado</FormLabel>
-                                                            <SelectForm {...field} label="" options={UF_LIST} placeholder="UF"
-                                                                onChangeSelect={(name: any, opt: any) => field.onChange(opt)} errorMessage={errors.state?.message as any} />
+                                                            <SelectForm {...(field as any)} label="" options={UF_LIST} placeholder="UF"
+                                                                value={field.value ?? null}
+                                                                onChangeSelect={(_name: any, opt: any) => field.onChange(opt)} errorMessage={errors.state?.message as any} />
                                                             <FormErrorMessage>{errors.state?.message as any}</FormErrorMessage>
                                                         </FormControl>
                                                     )} />

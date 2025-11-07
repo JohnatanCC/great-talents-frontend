@@ -10,7 +10,7 @@ import {
     CardBody,
     CardFooter,
     CardHeader,
-    Divider,
+
     FormControl,
     FormErrorMessage,
     FormHelperText,
@@ -34,8 +34,8 @@ import {
 import { Info, Link2, Loader2, Trash2, Upload, Youtube } from "lucide-react";
 import ReactPlayer from "react-player";
 import Layout from "@/Layout";
-import Content from "@/components/UI/Content";
 import CandidateVideoCurriculumService from "@/services/Candidate/CandidateVideoCurriculumService";
+import { toastTemplate } from "@/templates/toast";
 
 /* ------------------------ utils ------------------------ */
 // aceita youtube (watch?v=, youtu.be, shorts) e vimeo
@@ -67,7 +67,8 @@ const VideoResume = () => {
                 setInitialLink(current);
                 setVideoLink(current);
             } catch {
-                // se não houver nada salvo, segue vazio
+                // se houve erro ao carregar, avisar o usuário
+                toast(toastTemplate({ status: "error", description: "Erro ao carregar vídeo salvo" }))
             } finally {
                 setFetching(false);
             }
@@ -229,7 +230,7 @@ const VideoResume = () => {
                                     colorScheme="brand"
                                     onClick={onSubmit}
                                     isLoading={saving}
-                                    isDisabled={!dirty || !isValid}
+                                    isDisabled={fetching || !dirty || !isValid}
                                 >
                                     {saving ? "Enviando..." : "Salvar vídeo"}
                                 </Button>

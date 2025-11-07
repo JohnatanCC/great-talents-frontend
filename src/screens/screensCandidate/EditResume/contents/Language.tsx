@@ -81,11 +81,11 @@ export const Language = () => {
                     </Alert>
                 ) : (
                     <SimpleGrid my={2} gap={4} columns={{ base: 1, md: 2, lg: 3 }}>
-                        {Array.isArray(languages) && languages.map((language) => (
+                        {languages.map((language) => (
                             <LanguageCard
                                 key={language.id}
                                 language={language}
-                                refresh={getCandidateLanguages}
+                                onRefresh={getCandidateLanguages}
                             />
                         ))}
                     </SimpleGrid>
