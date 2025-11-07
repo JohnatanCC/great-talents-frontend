@@ -155,11 +155,6 @@ export default function CompanyForm() {
   // Submit
   const onSubmit: SubmitHandler<FormValuesNewCompany> = async (data) => {
     try {
-      if (!data.photo && !isEdit) {
-        toast(toastTemplate({ status: "error", description: "Selecione uma imagem" }))
-        return
-      }
-
       if (isEdit) {
         await CompanyService.update(data, Number(id))
         toast({ title: "Empresa atualizada com sucesso", status: "success" })

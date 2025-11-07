@@ -1,5 +1,5 @@
 // src/pages/admin/tags/TagsList.tsx
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   Box,
   CardBody,
@@ -20,46 +20,11 @@ import SearchBar from "@/components/UI/SearchBar"
 import TagCard from "./components/Tag"
 import Content from "@/components/UI/Content"
 
-// ===== Toggle para mock =====
-const USE_MOCK = true
-
-// ===== Mock (para testes sem backend) =====
-const mockTags: TagDTO[] = [
-  { id: 1, name: "Comunicação" },
-  { id: 2, name: "Trabalho em equipe" },
-  { id: 3, name: "Proatividade" },
-  { id: 4, name: "Organização" },
-  { id: 5, name: "Foco em resultados" },
-  { id: 6, name: "Atendimento ao cliente" },
-]
-
-// ===== Helpers (API reais) =====
-async function listTags(): Promise<TagDTO[]> {
-  if (USE_MOCK) return Promise.resolve([...mockTags])
-  const { data } = await api.get("/tags")
-  return Array.isArray(data) ? data : (data?.results ?? [])
-}
-async function createTag(payload: { name: string }): Promise<TagDTO> {
-  if (USE_MOCK) return Promise.resolve({ id: Number(Date.now()), name: payload.name })
-  const { data } = await api.post("/tags", payload)
-  return data
-}
-async function updateTag(id: number, payload: { name: string }): Promise<TagDTO> {
-  if (USE_MOCK) return Promise.resolve({ id, name: payload.name })
-  const { data } = await api.patch(`/tags/${id}`, payload)
-  return data
-}
-async function deleteTag(id: number): Promise<void> {
-  if (USE_MOCK) return Promise.resolve()
-  await api.delete(`/tags/${id}`)
-}
-
 // ===== Page =====
 export default function TagsList() {
   const toast = useToast()
   const [items, setItems] = useState<TagDTO[]>([])
   const [loading, setLoading] = useState(true)
-
   const [searchInput, setSearchInput] = useState("")
   const [search, setSearch] = useState("")
 
@@ -69,40 +34,39 @@ export default function TagsList() {
     return () => clearTimeout(t)
   }, [searchInput])
 
-  const fetchAll = useCallback(async () => {
+  const getTags = async () => {
     try {
       setLoading(true)
-      const data = await listTags()
-      setItems(data)
-    } catch {
-      toast({ title: "Erro ao carregar tags", status: "error" })
+      const response = await api.get('/tags')
+      setItems(response.data)
+    } catch (error) {
+      toast({
+        title: "Erro ao carregar tags",
+        status: "error",
+        duration: 3000,
+      })
     } finally {
       setLoading(false)
     }
-  }, [toast])
+  }
 
-  useEffect(() => { void fetchAll() }, [fetchAll])
+  useEffect(() => {
+    getTags()
+  }, [])
 
+  // Filtro de busca
   const filtered = useMemo(() => {
-    const term = search.trim().toLowerCase()
-    if (!term) return items
-    return items.filter((t) => t.name?.toLowerCase().includes(term))
+    if (!search.trim()) return items
+    const lower = search.toLowerCase()
+    return items.filter((item) => item.name.toLowerCase().includes(lower))
   }, [items, search])
 
-  // callbacks para filhos (CRUD)
-  async function handleCreate(payload: { name: string }) {
-    const created = await createTag(payload)
-    setItems((prev) => [created, ...prev])
-    return created
-  }
-  async function handleUpdate(id: number, payload: { name: string }) {
-    const updated = await updateTag(id, payload)
-    setItems((prev) => prev.map((i) => (i.id === id ? updated : i)))
-    return updated
-  }
-  async function handleDelete(id: number) {
-    await deleteTag(id)
-    setItems((prev) => prev.filter((i) => i.id !== id))
+  // Criar tag
+  const handleCreate = async (payload: { name: string }): Promise<TagDTO> => {
+    const response = await api.post('/tags', payload)
+    const newTag = response.data
+    setItems((prev) => [...prev, newTag])
+    return newTag
   }
 
   return (
@@ -152,12 +116,7 @@ export default function TagsList() {
           ) : (
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
               {filtered.map((t) => (
-                <TagCard
-                  key={t.id}
-                  tag={t}
-                  onUpdate={async (id, payload) => { await handleUpdate(id, payload) }}
-                  onDelete={async (id) => { await handleDelete(id) }}
-                />
+                <TagCard key={t.id} tag={t} />
               ))}
             </SimpleGrid>
           )}

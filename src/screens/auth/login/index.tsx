@@ -63,7 +63,7 @@ export const Login = () => {
             if (responseData.role === "ADMIN") {
                 navigate("/admin/empresas");
             } else if (responseData.role === "COMPANY") {
-                navigate("/company/processos-seletivos");
+                navigate("empresa/processos-seletivos/");
             } else if (responseData.role === "CANDIDATE") {
                 navigate("/candidate/curriculo");
             }

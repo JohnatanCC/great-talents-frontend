@@ -66,12 +66,10 @@ const navItemsCandidate: NavItem[] = [
 ];
 
 const navItemsCompany: NavItem[] = [
-    { path: "/processos-seletivos", label: "Processos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "COMPANY" },
+    { path: "/empresa/processos-seletivos", label: "Processos Seletivos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "COMPANY" },
     { path: "/empresa/candidatos", label: "Candidatos", icon: LuUsers, legend: "Candidatos", role: "COMPANY" },
     { path: "/admin/beneficios", label: "Benefícios", icon: LuGift, legend: "Benefícios", role: "COMPANY" },
     { path: "/admin/cargos", label: "Cargos", icon: LuWalletCards, legend: "Cargos", role: "COMPANY" },
-    { path: "/admin/tags", label: "Tags", icon: LucideTags, legend: "Tags", role: "COMPANY" },
-    { path: "/empresa/processos-seletivos", label: "Processos Seletivos", icon: LuBriefcaseBusiness, legend: "Processos Seletivos", role: "COMPANY" }
 ];
 
 const navItemsAdmin: NavItem[] = [

@@ -1,5 +1,5 @@
 // src/pages/admin/positions/PositionsList.tsx
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   Box,
   CardBody,
@@ -21,55 +21,6 @@ import PositionCard from "./components/Position"
 import Layout from "@/Layout"
 import Content from "@/components/UI/Content"
 
-
-// ===== Mock =====
-const mockPositions: PositionDTO[] = [
-  { id: 1, name: "Analista de RH" },
-  { id: 2, name: "Desenvolvedor Frontend" },
-  { id: 3, name: "Gerente de Projetos" },
-  { id: 4, name: "Operador de Caixa" },
-  { id: 5, name: "Auxiliar Administrativo" },
-  { id: 6, name: "Designer Gráfico" },
-  { id: 7, name: "Coordenador de Marketing" },
-]
-
-const USE_MOCK = true // Altere para false para usar a API real
-let mockState = [...mockPositions]
-
-async function listPositions(): Promise<PositionDTO[]> {
-  if (USE_MOCK) {
-    return Promise.resolve([...mockState])
-  }
-  const { data } = await api.get("/positions")
-  return Array.isArray(data) ? data : (data?.results ?? [])
-}
-async function createPosition(payload: { name: string }): Promise<PositionDTO> {
-  if (USE_MOCK) {
-    const newId = Math.max(0, ...mockState.map(p => p.id)) + 1
-    const created = { id: newId, name: payload.name }
-    mockState = [created, ...mockState]
-    return Promise.resolve(created)
-  }
-  const { data } = await api.post("/positions", payload)
-  return data
-}
-async function updatePosition(id: number, payload: { name: string }): Promise<PositionDTO> {
-  if (USE_MOCK) {
-    mockState = mockState.map(p => p.id === id ? { ...p, ...payload } : p)
-    const updated = mockState.find(p => p.id === id)!
-    return Promise.resolve(updated)
-  }
-  const { data } = await api.patch(`/positions/${id}`, payload)
-  return data
-}
-async function deletePosition(id: number): Promise<void> {
-  if (USE_MOCK) {
-    mockState = mockState.filter(p => p.id !== id)
-    return Promise.resolve()
-  }
-  await api.delete(`/positions/${id}`)
-}
-
 // ===== Page =====
 export default function PositionsList() {
   const toast = useToast()
@@ -84,40 +35,39 @@ export default function PositionsList() {
     return () => clearTimeout(t)
   }, [searchInput])
 
-  const fetchAll = useCallback(async () => {
+  const getPositions = async () => {
     try {
       setLoading(true)
-      const data = await listPositions()
-      setItems(data)
-    } catch {
-      toast({ title: "Erro ao carregar cargos", status: "error" })
+      const response = await api.get('/positions')
+      setItems(response.data)
+    } catch (error) {
+      toast({
+        title: "Erro ao carregar cargos",
+        status: "error",
+        duration: 3000,
+      })
     } finally {
       setLoading(false)
     }
-  }, [toast])
+  }
 
-  useEffect(() => { void fetchAll() }, [fetchAll])
+  useEffect(() => {
+    getPositions()
+  }, [])
 
+  // Filtro de busca
   const filtered = useMemo(() => {
-    const term = search.trim().toLowerCase()
-    if (!term) return items
-    return items.filter((p) => p.name?.toLowerCase().includes(term))
+    if (!search.trim()) return items
+    const lower = search.toLowerCase()
+    return items.filter((item) => item.name.toLowerCase().includes(lower))
   }, [items, search])
 
-  // callbacks para filhos
-  async function handleCreate(payload: { name: string }) {
-    const created = await createPosition(payload)
-    setItems((prev) => [created, ...prev])
-    return created
-  }
-  async function handleUpdate(id: number, payload: { name: string }) {
-    const updated = await updatePosition(id, payload)
-    setItems((prev) => prev.map((i) => (i.id === id ? updated : i)))
-    return updated
-  }
-  async function handleDelete(id: number) {
-    await deletePosition(id)
-    setItems((prev) => prev.filter((i) => i.id !== id))
+  // Criar cargo
+  const handleCreate = async (payload: { name: string }): Promise<PositionDTO> => {
+    const response = await api.post('/positions', payload)
+    const newPosition = response.data
+    setItems((prev) => [...prev, newPosition])
+    return newPosition
   }
 
   return (
@@ -167,12 +117,7 @@ export default function PositionsList() {
           ) : (
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
               {filtered.map((p) => (
-                <PositionCard
-                  key={p.id}
-                  position={p}
-                  onUpdate={async (id, payload) => { await handleUpdate(id, payload) }}
-                  onDelete={async (id) => { await handleDelete(id) }}
-                />
+                <PositionCard key={p.id} position={p} />
               ))}
             </SimpleGrid>
           )}
