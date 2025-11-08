@@ -7,11 +7,11 @@ import {
     Flex,
     Heading,
     Stack,
-    useColorModeValue,
 } from "@chakra-ui/react"
 import { motion } from "framer-motion"
 import { ChevronRightIcon } from "@chakra-ui/icons"
 import { useNavigate } from "react-router-dom"
+import { formatAge } from "@/utils/calculateAge"
 
 const MotionFlex = motion(Flex)
 
@@ -64,7 +64,7 @@ const CandidateCard: React.FC<Props> = ({ candidate }) => {
                         {candidate.city} - {candidate.state}
                     </Heading>
                     <Heading size="xs" color="muted" noOfLines={1}>
-                        {candidate.date_birth}
+                        {formatAge(candidate.date_birth)}
                     </Heading>
                 </Stack>
             </CardBody>

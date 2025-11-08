@@ -1,31 +1,27 @@
 // src/pages/admin/candidates/CandidatesList.tsx
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
-    Card,
     CardBody,
     CardHeader,
-    Container,
     Divider,
     Flex,
     Heading,
     HStack,
-    IconButton,
     SimpleGrid,
     Skeleton,
     Text,
-    Tooltip,
-    useColorModeValue,
     useToast,
 } from "@chakra-ui/react"
-import { RepeatIcon } from "@chakra-ui/icons"
 import Layout from "@/Layout"
 import type { CandidateDTO } from "./components/CandidateCard"
 import SearchBar from "@/components/UI/SearchBar"
 import CandidateCard from "./components/CandidateCard"
 import Content from "@/components/UI/Content"
+import CandidateService from "@/services/CandidateService"
+import { normalize } from "@/utils/normalize"
 
 // ========= toggle de mock =========
-const USE_MOCK = true
+const USE_MOCK = false
 
 // ========= mock =========
 const mockCandidates: CandidateDTO[] = [
@@ -64,24 +60,12 @@ const mockCandidates: CandidateDTO[] = [
 // ========= helpers =========
 async function listCandidates(): Promise<CandidateDTO[]> {
     if (USE_MOCK) return Promise.resolve([...mockCandidates])
-    // const resp = await CandidateService.findAll()
-    // return resp as CandidateDTO[]
-    return []
-}
-
-// normaliza texto (sem acento/espacos extras)
-function normalize(str: string) {
-    return (str || "")
-        .normalize("NFD")
-        .replace(/\p{Diacritic}/gu, "")
-        .toLowerCase()
-        .trim()
+    const resp = await CandidateService.findAll()
+    return resp as CandidateDTO[]
 }
 
 export default function CandidatesList() {
     const toast = useToast()
-    const cardBg = useColorModeValue("surface", "surface")
-    const border = useColorModeValue("border", "border")
     const rowSkeletons = 10
 
     const [items, setItems] = useState<CandidateDTO[]>([])

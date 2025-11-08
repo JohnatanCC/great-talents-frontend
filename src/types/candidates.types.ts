@@ -2,7 +2,20 @@ import type { SelectOption } from "./main.types";
 
 
 export type ResponseFindAllCandidates = {
-  id: string;
+  id: number;
+  name: string;
+  email: string;
+  cpf: string;
+  contact: string;
+  date_birth: string;
+  genre: "M" | "F";
+  cep: string;
+  city: string;
+  neighborhood: string;
+  number: string;
+  street: string;
+  state: string;
+  file?: { id: number; url: string };
 }[];
 
 export type FormValuesNewCandidate = {
