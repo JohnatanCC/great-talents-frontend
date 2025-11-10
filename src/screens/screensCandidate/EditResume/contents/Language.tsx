@@ -42,7 +42,7 @@ export const Language = () => {
         } finally {
             setLoading(false);
         }
-    }, [toast]);
+    }, []);
 
     useEffect(() => {
         getCandidateLanguages();

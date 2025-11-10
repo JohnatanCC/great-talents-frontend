@@ -125,7 +125,7 @@ export default function CompanyProfile() {
         return () => {
             mounted = false
         }
-    }, [toast])
+    }, [])
 
     // Load company when editing
     useEffect(() => {

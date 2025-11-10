@@ -65,7 +65,7 @@ export function OpportunitieViewCard({ registration, onChanged }: Props) {
                 <CardBody pt={0}>
                     <Text color="muted" fontSize="sm">
                         {/* Mostre um resumo simples; se houver outros campos, adicione-os aqui */}
-                        Etapa atual: <b>{registration.status}</b>
+                        Etapa atual: <Text as="span" fontWeight="bold">{registration.status}</Text>
                     </Text>
                 </CardBody>
 

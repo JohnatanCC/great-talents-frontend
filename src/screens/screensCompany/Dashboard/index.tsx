@@ -375,7 +375,7 @@ const CompanyDashboard: React.FC = () => {
                 <Box mt={10}>
                     <Divider mb={3} />
                     <Text color="muted" fontSize="sm">
-                        * Em breve: aba com gráficos do <b>Super Vagas</b> (via API) lado a lado com os do Great Talents.
+                        * Em breve: aba com gráficos do <Text as="span" fontWeight="bold">Super Vagas</Text> (via API) lado a lado com os do Great Talents.
                     </Text>
                 </Box>
             </Box>

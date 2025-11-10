@@ -1,8 +1,7 @@
 // src/pages/admin/tags/components/TagForm.tsx
 import React, { useMemo, useState } from "react"
 import { Flex, IconButton, Input, Spinner, useToast } from "@chakra-ui/react"
-import { AddIcon } from "@chakra-ui/icons";
-import InputForm from "@/components/UI/InputForm";
+import { AddIcon } from "@chakra-ui/icons"
 
 export type TagDTO = { id: number; name: string }
 
@@ -49,14 +48,18 @@ const TagForm: React.FC<TagFormProps> = ({
 
     try {
       setLoading(true)
+      console.log("🔄 [TagForm] Enviando criação:", name)
+
       const created = onCreateApi
         ? await onCreateApi({ name })
         : { id: Number(Math.random().toString().slice(2)), name }
 
       onCreate?.(created)
       setValue("")
+      console.log("✅ [TagForm] Tag criada e form limpo")
       toast({ title: "Tag criada com sucesso", status: "success" })
-    } catch {
+    } catch (error) {
+      console.error("❌ [TagForm] Erro ao criar tag:", error)
       toast({ title: "Erro ao criar tag", status: "error" })
     } finally {
       setLoading(false)

@@ -1,5 +1,5 @@
 // src/pages/admin/candidates/CandidatesList.tsx
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import {
     CardBody,
     CardHeader,
@@ -67,6 +67,7 @@ async function listCandidates(): Promise<CandidateDTO[]> {
 export default function CandidatesList() {
     const toast = useToast()
     const rowSkeletons = 10
+    const hasInitialized = useRef(false)
 
     const [items, setItems] = useState<CandidateDTO[]>([])
     const [loading, setLoading] = useState(true)
@@ -81,18 +82,23 @@ export default function CandidatesList() {
     }, [searchInput])
 
     const fetchAll = useCallback(async () => {
+        if (hasInitialized.current) return
+        hasInitialized.current = true
+
         try {
             setLoading(true)
+            console.log("🔄 Iniciando requisição de candidatos...")
             const data = await listCandidates()
             setItems(data)
+            console.log("✅ Candidatos carregados com sucesso")
         } catch {
             toast({ title: "Erro ao carregar candidatos", status: "error" })
         } finally {
             setLoading(false)
         }
-    }, [toast])
+    }, [])
 
-    useEffect(() => { void fetchAll() }, [fetchAll])
+    useEffect(() => { void fetchAll() }, [])
 
     const filtered = useMemo(() => {
         const term = normalize(search)

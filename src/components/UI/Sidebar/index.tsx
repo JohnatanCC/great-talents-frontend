@@ -17,7 +17,7 @@ import {
     useBreakpointValue,
     Center,
 } from "@chakra-ui/react";
-import { LogOut, LucideTags } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Link, useNavigate, useMatch } from "react-router-dom";
 import {
     ChevronLeft,
@@ -141,7 +141,7 @@ function SidebarItem({ item, collapsed }: { item: NavItem; collapsed: boolean })
             justifyContent={collapsed ? "center" : "flex-start"}
         >
             <Center rounded="sm" p={1}>
-                <Icon fontSize={24} as={item.icon as any} CenterSize={5} color={isActive ? roleColor : color} mx={collapsed ? "auto" : 0} />
+                <Icon fontSize={24} as={item.icon as any} color={isActive ? roleColor : color} mx={collapsed ? "auto" : 0} />
             </Center>
             {
                 !collapsed && (

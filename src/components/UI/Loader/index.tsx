@@ -1,136 +1,136 @@
-// components/Loader.tsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-    Box,
-    Flex,
-    Spinner,
-    Text,
-    Progress,
-    Portal,
-    useColorModeValue,
     VStack,
-    HStack,
-    Icon,
+    Text,
+    Spinner,
+    Box,
+    useColorModeValue,
+    Flex
 } from "@chakra-ui/react";
-import { LucideTimer } from "lucide-react";
+import { motion } from "framer-motion";
 
-export interface LoaderProps {
-    /** Mensagem opcional abaixo do spinner */
+const MotionBox = motion.create ? motion.create(Box) : motion(Box);
+const MotionVStack = motion.create ? motion.create(VStack) : motion(VStack);
+
+interface LoaderProps {
+    /**
+     * Texto a ser exibido abaixo do spinner
+     */
     message?: string;
-    /** Modo tela cheia com backdrop */
-    fullscreen?: boolean;
-    /** Tempo mínimo de exibição para evitar flicker (ms) */
-    minShowMs?: number;
-    /** Dicas que alternam durante o carregamento */
-    tips?: string[];
+    /**
+     * Tamanho do spinner
+     */
+    size?: "xs" | "sm" | "md" | "lg" | "xl";
+    /**
+     * Altura mínima do container
+     */
+    minHeight?: string;
+    /**
+     * Se deve ocupar toda a altura disponível
+     */
+    fullHeight?: boolean;
 }
 
-/**
- * Loader com cronômetro de carregamento (mm:ss) e barra indeterminada.
- * Mantém a mesma assinatura de import (export const Loader) usada no projeto.
- */
 export const Loader: React.FC<LoaderProps> = ({
-    message = "Carregando…",
-    fullscreen = false,
-    minShowMs = 500,
-    tips,
+    message = "Carregando...",
+    size = "lg",
+    minHeight = "200px",
+    fullHeight = false
 }) => {
-    const [visible, setVisible] = useState(minShowMs === 0);
-    const [elapsedMs, setElapsedMs] = useState(0);
-    const startRef = useRef<number>(Date.now());
+    const bgGradient = useColorModeValue(
+        "linear(to-br, primary.50, warning.50)",
+        "linear(to-br, bg, bg.muted)"
+    );
 
-    const panelBg = useColorModeValue("white", "gray.800");
-    const panelBorder = useColorModeValue("gray.200", "whiteAlpha.200");
-    const textMuted = useColorModeValue("gray.600", "gray.300");
+    const textColor = "text.muted";
 
-    // Controle do cronômetro
-    useEffect(() => {
-        const tick = setInterval(() => {
-            setElapsedMs(Date.now() - startRef.current);
-        }, 100);
-        return () => clearInterval(tick);
-    }, []);
-
-    // Evita flicker em carregamentos muito rápidos
-    useEffect(() => {
-        if (!visible) {
-            const id = setTimeout(() => setVisible(true), minShowMs);
-            return () => clearTimeout(id);
-        }
-    }, [visible, minShowMs]);
-
-    // Tip rotativo a cada 4s
-    const tip = useMemo(() => {
-        if (!tips || tips.length === 0) return undefined;
-        const idx = Math.floor(elapsedMs / 4000) % tips.length;
-        return tips[idx];
-    }, [tips, elapsedMs]);
-
-    const mm = String(Math.floor(elapsedMs / 60000)).padStart(2, "0");
-    const ss = String(Math.floor((elapsedMs % 60000) / 1000)).padStart(2, "0");
-
-    const Content = (
+    return (
         <Flex
-            role="status"
-            aria-busy="true"
-            borderWidth={fullscreen ? 0 : 1}
-            borderColor={panelBorder}
-            bg={fullscreen ? "transparent" : panelBg}
-            borderRadius={fullscreen ? undefined : "xl"}
-            p={fullscreen ? 0 : 6}
-            w={fullscreen ? "full" : { base: "full", sm: "md" }}
-            maxW={fullscreen ? "full" : "lg"}
-            direction="column"
             align="center"
             justify="center"
-            boxShadow={fullscreen ? "none" : "md"}
+            minH={fullHeight ? "100vh" : minHeight}
+            w="full"
+            bgGradient={bgGradient}
+            borderRadius="xl"
+            position="relative"
+            overflow="hidden"
         >
-            <VStack spacing={4} w="full">
-                <Spinner thickness="4px" speed="0.7s" emptyColor="gray.200" color="orange.400" size="xl" />
+            {/* Efeito de fundo animado */}
+            <MotionBox
+                position="absolute"
+                top="50%"
+                left="50%"
+                w="200px"
+                h="200px"
+                bg="linear-gradient(45deg, rgba(255,107,53,0.1) 0%, rgba(255,210,63,0.1) 100%)"
+                borderRadius="full"
+                filter="blur(40px)"
+                initial={{ scale: 0.8, rotate: 0 }}
+                animate={{
+                    scale: [0.8, 1.2, 0.8],
+                    rotate: [0, 180, 360]
+                }}
+                transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                }}
+                style={{ transform: "translate(-50%, -50%)" }}
+            />
 
-                <HStack spacing={2} color={textMuted}>
-                    <Icon as={LucideTimer} />
-                    <Text fontFamily="mono" fontWeight="semibold">{mm}:{ss}</Text>
-                </HStack>
+            <MotionVStack
+                spacing={4}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                position="relative"
+                zIndex={1}
+            >
+                <MotionBox
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                >
+                    <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="primary.500"
+                        size={size}
+                    />
+                </MotionBox>
 
-                <Text textAlign="center" color={textMuted} fontSize="sm">
+                <Text
+                    fontSize="md"
+                    fontWeight="medium"
+                    color={textColor}
+                    textAlign="center"
+                >
                     {message}
                 </Text>
 
-                <Box w="full">
-                    <Progress size="sm" isIndeterminate colorScheme="orange" borderRadius="full" />
-                </Box>
-
-                {tip && (
-                    <Text pt={2} fontSize="xs" color={textMuted} textAlign="center">
-                        {tip}
-                    </Text>
-                )}
-            </VStack>
+                {/* Pontos animados */}
+                <Flex gap={1}>
+                    {[0, 1, 2].map((index) => (
+                        <MotionBox
+                            key={index}
+                            w="8px"
+                            h="8px"
+                            bg="orange.400"
+                            borderRadius="full"
+                            animate={{
+                                scale: [1, 1.3, 1],
+                                opacity: [0.5, 1, 0.5]
+                            }}
+                            transition={{
+                                duration: 1.2,
+                                repeat: Infinity,
+                                delay: index * 0.2
+                            }}
+                        />
+                    ))}
+                </Flex>
+            </MotionVStack>
         </Flex>
     );
-
-    if (!visible) return null;
-
-    if (fullscreen) {
-        return (
-            <Portal>
-                <Flex
-                    position="fixed"
-                    inset={0}
-                    bg={useColorModeValue("blackAlpha.200", "blackAlpha.400")}
-                    backdropFilter="blur(2px)"
-                    zIndex={1400}
-                    align="center"
-                    justify="center"
-                >
-                    {Content}
-                </Flex>
-            </Portal>
-        );
-    }
-
-    return <Box w="full">{Content}</Box>;
 };
 
 export default Loader;

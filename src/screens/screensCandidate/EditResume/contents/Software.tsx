@@ -46,7 +46,7 @@ export const Software: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [toast]);
+    }, []);
 
     useEffect(() => {
         void getCandidateSoftwares();

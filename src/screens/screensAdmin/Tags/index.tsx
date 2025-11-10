@@ -1,5 +1,5 @@
 // src/pages/admin/tags/TagsList.tsx
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import {
   Box,
   CardBody,
@@ -23,6 +23,8 @@ import Content from "@/components/UI/Content"
 // ===== Page =====
 export default function TagsList() {
   const toast = useToast()
+  const hasInitialized = useRef(false)
+
   const [items, setItems] = useState<TagDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [searchInput, setSearchInput] = useState("")
@@ -34,24 +36,31 @@ export default function TagsList() {
     return () => clearTimeout(t)
   }, [searchInput])
 
-  const getTags = async () => {
+  const getTags = useCallback(async () => {
+    if (hasInitialized.current) return
+    hasInitialized.current = true
+
     try {
       setLoading(true)
+      console.log("🔄 [Admin/Tags] Carregando tags...")
       const response = await api.get('/tags')
       setItems(response.data)
+      console.log(`✅ [Admin/Tags] ${response.data.length} tags carregadas`)
     } catch (error) {
+      console.error("❌ [Admin/Tags] Erro ao carregar tags:", error)
       toast({
         title: "Erro ao carregar tags",
         status: "error",
         duration: 3000,
       })
+      setItems([])
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
 
   useEffect(() => {
-    getTags()
+    void getTags()
   }, [])
 
   // Filtro de busca
@@ -62,12 +71,19 @@ export default function TagsList() {
   }, [items, search])
 
   // Criar tag
-  const handleCreate = async (payload: { name: string }): Promise<TagDTO> => {
-    const response = await api.post('/tags', payload)
-    const newTag = response.data
-    setItems((prev) => [...prev, newTag])
-    return newTag
-  }
+  const handleCreate = useCallback(async (payload: { name: string }): Promise<TagDTO> => {
+    try {
+      console.log("🔄 [Admin/Tags] Criando tag:", payload.name)
+      const response = await api.post('/tags', payload)
+      const newTag = response.data
+      setItems((prev) => [...prev, newTag])
+      console.log("✅ [Admin/Tags] Tag criada com sucesso:", newTag.name)
+      return newTag
+    } catch (error) {
+      console.error("❌ [Admin/Tags] Erro ao criar tag:", error)
+      throw error
+    }
+  }, [])
 
   return (
     <Layout>

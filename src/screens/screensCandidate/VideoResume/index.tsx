@@ -135,20 +135,20 @@ const VideoResume = () => {
                                 <ListItem>
                                     <HStack align="start" spacing={2}>
                                         <Icon as={Info} mt="2px" />
-                                        <Text>Grave com o celular na <b>horizontal</b>, em local silencioso e bem iluminado.</Text>
+                                        <Text>Grave com o celular na <Text as="span" fontWeight="bold">horizontal</Text>, em local silencioso e bem iluminado.</Text>
                                     </HStack>
                                 </ListItem>
                                 <ListItem>
                                     <HStack align="start" spacing={2}>
                                         <Icon as={Info} mt="2px" />
-                                        <Text>Envie ao <b>YouTube</b> ou <b>Vimeo</b> como <b>Não listado</b> (ou privado com link).</Text>
+                                        <Text>Envie ao <Text as="span" fontWeight="bold">YouTube</Text> ou <Text as="span" fontWeight="bold">Vimeo</Text> como <Text as="span" fontWeight="bold">Não listado</Text> (ou privado com link).</Text>
                                     </HStack>
                                 </ListItem>
                                 <ListItem>
                                     <HStack align="start" spacing={2}>
                                         <Icon as={Info} mt="2px" />
                                         <Text>
-                                            <b>Máx. 4 minutos</b>: apresente-se, conte resultados/impactos e destaque habilidades.
+                                            <Text as="span" fontWeight="bold">Máx. 4 minutos</Text>: apresente-se, conte resultados/impactos e destaque habilidades.
                                         </Text>
                                     </HStack>
                                 </ListItem>

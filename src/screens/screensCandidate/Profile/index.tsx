@@ -103,8 +103,6 @@ const LEVEL_OPTIONS = [
 
 export default function CandidateProfile() {
     const toast = useToast()
-    const surface = useColorModeValue("white", "gray.800")
-    const border = useColorModeValue("gray.200", "whiteAlpha.200")
 
     const {
         register,

@@ -2,7 +2,7 @@ import Content from "@/components/UI/Content";
 import Layout from "@/Layout";
 import SelectionProcessService from "@/services/SelectionProcessService";
 // ===== MOCK SETUP =====
-const USE_MOCK = true;
+const USE_MOCK = false;
 const mockSelectionProcess = {
     id: 1,
     title: "Atendente de loja",
@@ -43,7 +43,7 @@ import { toastTemplate } from "@/templates/toast";
 import type { SelectionProcess } from "@/types/selectionProcess.types";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, Card, CardBody, CardHeader, Heading, HStack, Menu, MenuButton, MenuItem, MenuList, Text, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Board } from "./content/Board";
 import Loader from "@/components/UI/Loader";
@@ -52,6 +52,7 @@ export const SelectionProcessDetails = () => {
     const navigate = useNavigate();
     const params = useParams<{ id: string }>();
     const toast = useToast();
+    const hasInitialized = useRef(false);
 
     const [currentSelectionProcess, setCurrentSelectionProcess] =
         useState<SelectionProcess | null>(null);
@@ -77,19 +78,24 @@ export const SelectionProcessDetails = () => {
     ];
 
 
-    const getSelectionProcess = () => {
-        if (params.id) {
-            SelectionProcessService.findOne(params.id).then((response) => {
-                setCurrentSelectionProcess(response);
-            });
+    const getSelectionProcess = useCallback(async () => {
+        if (!params.id || hasInitialized.current) return;
+        hasInitialized.current = true;
+
+        try {
+            console.log("🔄 [SelectionProcessDetails] Carregando processo seletivo:", params.id);
+            const response = await SelectionProcessService.findOne(params.id);
+            setCurrentSelectionProcess(response);
+            console.log("✅ [SelectionProcessDetails] Processo seletivo carregado:", response.title);
+        } catch (error) {
+            console.error("❌ [SelectionProcessDetails] Erro ao carregar processo:", error);
+            toast(toastTemplate({ status: "error", title: "Erro ao carregar processo seletivo" }));
         }
-    };
+    }, [params.id, toast]);
 
     useEffect(() => {
-        if (params.id) {
-            getSelectionProcess();
-        }
-    }, [params.id]);
+        void getSelectionProcess();
+    }, []);
     return (
         <Layout>
             <Content>

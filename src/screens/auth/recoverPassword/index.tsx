@@ -1,5 +1,6 @@
 // components/auth/RecoveryPassword.tsx
 import { Button, Flex, Heading, Text, useToast } from "@chakra-ui/react";
+import { useState } from "react";
 import InputForm from "@/components/UI/InputForm";
 
 import AuthService from "@/services/AuthService";
@@ -10,19 +11,23 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 type ValuesFormRecoveryPassword = { email: string };
 interface RecoveryPasswordProps { onBack: () => void; }
 
-const MotionFlex = motion(Flex);
+const MotionFlex = motion.create ? motion.create(Flex) : motion(Flex);
 
 export const RecoveryPassword: React.FC<RecoveryPasswordProps> = ({ onBack }) => {
     const toast = useToast();
+    const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit } = useForm<ValuesFormRecoveryPassword>({ defaultValues: { email: "" } });
 
     const onSubmit: SubmitHandler<ValuesFormRecoveryPassword> = async ({ email }) => {
         try {
+            setIsLoading(true);
             await AuthService.recoveryPassword(email);
             toast(toastTemplate({ description: "Email enviado com sucesso", status: "success" }));
             onBack();
         } catch {
             toast(toastTemplate({ description: "Falha ao tentar recuperar senha", status: "error" }));
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -48,8 +53,22 @@ export const RecoveryPassword: React.FC<RecoveryPasswordProps> = ({ onBack }) =>
                     placeholder="Insira seu email de usuário"
                     required
                 />
-                <Button type="submit" width="full" colorScheme="brand">Enviar</Button>
-                <Button onClick={onBack} variant="link" colorScheme="brand">
+                <Button
+                    type="submit"
+                    width="full"
+                    colorScheme="brand"
+                    isLoading={isLoading}
+                    loadingText="Enviando..."
+                    disabled={isLoading}
+                >
+                    Enviar
+                </Button>
+                <Button
+                    onClick={onBack}
+                    variant="link"
+                    colorScheme="brand"
+                    disabled={isLoading}
+                >
                     <Text mt={2}>Voltar ao login</Text>
                 </Button>
             </Flex>

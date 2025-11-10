@@ -1,8 +1,9 @@
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import AuthProvider from './providers/AuthProvider'
 import Routes from './Routes'
-import { theme } from './theme'
 import { AnimatePresence } from 'framer-motion'
+import { theme } from './theme'
+
 
 
 function App() {

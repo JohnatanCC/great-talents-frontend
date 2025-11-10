@@ -257,7 +257,7 @@ export const Documentation: React.FC = () => {
                         <Heading size="xs">Heading – XS</Heading>
 
                         <Text>
-                            <b>Texto padrão</b> com ênfase, <Code>Code inline</Code> e atalhos com <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd>.
+                            <Text as="span" fontWeight="bold">Texto padrão</Text> com ênfase, <Code>Code inline</Code> e atalhos com <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd>.
                         </Text>
                         <Text color="subtle">Texto sutil para descrições e metadados.</Text>
                         <Link href="#" color="primary">Link com cor primária</Link>

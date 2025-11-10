@@ -80,7 +80,7 @@ const InfoRow = ({
         <Icon as={icon} boxSize={5} color="brand.600" _dark={{ color: "brand.300" }} />
         <Box>
             <Text fontWeight={600} fontSize="sm">{label}</Text>
-            <Text>{value ?? "—"}</Text>
+            <Box>{value ?? "—"}</Box>
         </Box>
     </HStack>
 );

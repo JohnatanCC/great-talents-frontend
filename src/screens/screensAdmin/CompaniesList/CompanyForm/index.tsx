@@ -109,7 +109,7 @@ export default function CompanyForm() {
     return () => {
       mounted = false
     }
-  }, [toast])
+  }, [])
 
   // Load company when editing
   useEffect(() => {

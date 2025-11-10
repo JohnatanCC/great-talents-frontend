@@ -49,14 +49,18 @@ export default function BenefitForm({ onCreateApi, onCreate, existing = [], plac
 
     try {
       setLoading(true)
+      console.log("🔄 [BenefitForm] Enviando criação:", description)
+
       const created = onCreateApi
         ? await onCreateApi({ description })
         : { id: Number(Math.random().toString().slice(2)), description }
 
       onCreate?.(created)
       setValue("")
+      console.log("✅ [BenefitForm] Benefício criado e form limpo")
       toast({ title: "Benefício criado", status: "success" })
     } catch (e) {
+      console.error("❌ [BenefitForm] Erro ao criar benefício:", e)
       toast({ title: "Erro ao criar benefício", status: "error" })
     } finally {
       setLoading(false)

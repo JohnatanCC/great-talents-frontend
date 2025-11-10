@@ -1,8 +1,7 @@
 // src/pages/admin/positions/components/PositionForm.tsx
 import React, { useMemo, useState } from "react"
 import { Flex, IconButton, Input, Spinner, useToast } from "@chakra-ui/react"
-import InputForm from "@/components/UI/InputForm";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons"
 
 export type PositionDTO = { id: number; name: string }
 
@@ -49,14 +48,18 @@ const PositionForm: React.FC<PositionFormProps> = ({
 
     try {
       setLoading(true)
+      console.log("🔄 [PositionForm] Enviando criação:", name)
+
       const created = onCreateApi
         ? await onCreateApi({ name })
         : { id: Number(Math.random().toString().slice(2)), name }
 
       onCreate?.(created)
       setValue("")
+      console.log("✅ [PositionForm] Cargo criado e form limpo")
       toast({ title: "Cargo criado com sucesso", status: "success" })
-    } catch {
+    } catch (error) {
+      console.error("❌ [PositionForm] Erro ao criar cargo:", error)
       toast({ title: "Erro ao criar cargo", status: "error" })
     } finally {
       setLoading(false)

@@ -78,6 +78,7 @@ export default function CompaniesList() {
             if (!isRetry) {
                 setIsLoading(true)
                 setError(null)
+                console.log("🔄 [Admin/CompaniesList] Carregando empresas...")
             }
 
             const response = await CompanyService.findAll()
@@ -88,8 +89,10 @@ export default function CompaniesList() {
                 setError(null)
                 setRetryCount(0)
                 setIsLoading(false)
+                console.log(`✅ [Admin/CompaniesList] ${companies.length} empresas carregadas`)
             }
         } catch (error) {
+            console.error("❌ [Admin/CompaniesList] Erro ao carregar empresas:", error)
             if (isMounted.current) {
                 const errorMessage = (error as any)?.response?.data?.message || "Erro ao obter os dados das empresas"
                 setError(errorMessage)
@@ -115,7 +118,7 @@ export default function CompaniesList() {
         return () => {
             isMounted.current = false
         }
-    }, [toast])
+    }, [])
 
     // Filtering & pagination (com guardas)
     const filtered: Company[] = useMemo(() => {

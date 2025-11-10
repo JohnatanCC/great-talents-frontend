@@ -1,5 +1,5 @@
 // src/pages/admin/benefits/Benefits.tsx
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import {
   Box,
   CardBody,
@@ -27,6 +27,8 @@ export interface BenefitDTO {
 
 export default function Benefits() {
   const toast = useToast()
+  const hasInitialized = useRef(false)
+
   const [items, setItems] = useState<BenefitDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [searchInput, setSearchInput] = useState("")
@@ -38,24 +40,31 @@ export default function Benefits() {
     return () => clearTimeout(t)
   }, [searchInput])
 
-  const getBenefits = async () => {
+  const getBenefits = useCallback(async () => {
+    if (hasInitialized.current) return
+    hasInitialized.current = true
+
     try {
       setLoading(true)
+      console.log("🔄 [Admin/Benefits] Carregando benefícios...")
       const response = await api.get('/benefits')
       setItems(response.data)
+      console.log(`✅ [Admin/Benefits] ${response.data.length} benefícios carregados`)
     } catch (error) {
+      console.error("❌ [Admin/Benefits] Erro ao carregar benefícios:", error)
       toast({
         title: "Erro ao carregar benefícios",
         status: "error",
         duration: 3000,
       })
+      setItems([])
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
 
   useEffect(() => {
-    getBenefits()
+    void getBenefits()
   }, [])
 
   // Filtro de busca
@@ -66,12 +75,19 @@ export default function Benefits() {
   }, [items, search])
 
   // Criar benefício
-  const handleCreate = async (payload: { description: string }): Promise<BenefitDTO> => {
-    const response = await api.post('/benefits', payload)
-    const newBenefit = response.data
-    setItems((prev) => [...prev, newBenefit])
-    return newBenefit
-  }
+  const handleCreate = useCallback(async (payload: { description: string }): Promise<BenefitDTO> => {
+    try {
+      console.log("🔄 [Admin/Benefits] Criando benefício:", payload.description)
+      const response = await api.post('/benefits', payload)
+      const newBenefit = response.data
+      setItems((prev) => [...prev, newBenefit])
+      console.log("✅ [Admin/Benefits] Benefício criado com sucesso:", newBenefit.description)
+      return newBenefit
+    } catch (error) {
+      console.error("❌ [Admin/Benefits] Erro ao criar benefício:", error)
+      throw error
+    }
+  }, [])
 
   return (
     <Layout>

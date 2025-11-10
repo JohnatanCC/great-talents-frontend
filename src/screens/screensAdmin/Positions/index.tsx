@@ -1,5 +1,5 @@
 // src/pages/admin/positions/PositionsList.tsx
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import {
   Box,
   CardBody,
@@ -9,7 +9,6 @@ import {
   Heading,
   HStack,
   SimpleGrid,
-  Skeleton,
   Text,
   useToast,
 } from "@chakra-ui/react"
@@ -20,10 +19,14 @@ import SearchBar from "@/components/UI/SearchBar"
 import PositionCard from "./components/Position"
 import Layout from "@/Layout"
 import Content from "@/components/UI/Content"
+import Loader from "@/components/UI/Loader"
+import NoDataFound from "@/components/UI/NoDataFound"
 
 // ===== Page =====
 export default function PositionsList() {
   const toast = useToast()
+  const hasInitialized = useRef(false)
+
   const [items, setItems] = useState<PositionDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [searchInput, setSearchInput] = useState("")
@@ -35,24 +38,31 @@ export default function PositionsList() {
     return () => clearTimeout(t)
   }, [searchInput])
 
-  const getPositions = async () => {
+  const getPositions = useCallback(async () => {
+    if (hasInitialized.current) return
+    hasInitialized.current = true
+
     try {
       setLoading(true)
+      console.log("🔄 [Admin/Positions] Carregando cargos...")
       const response = await api.get('/positions')
       setItems(response.data)
+      console.log(`✅ [Admin/Positions] ${response.data.length} cargos carregados`)
     } catch (error) {
+      console.error("❌ [Admin/Positions] Erro ao carregar cargos:", error)
       toast({
         title: "Erro ao carregar cargos",
         status: "error",
         duration: 3000,
       })
+      setItems([]) // Garantir estado limpo em caso de erro
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
 
   useEffect(() => {
-    getPositions()
+    void getPositions()
   }, [])
 
   // Filtro de busca
@@ -63,12 +73,19 @@ export default function PositionsList() {
   }, [items, search])
 
   // Criar cargo
-  const handleCreate = async (payload: { name: string }): Promise<PositionDTO> => {
-    const response = await api.post('/positions', payload)
-    const newPosition = response.data
-    setItems((prev) => [...prev, newPosition])
-    return newPosition
-  }
+  const handleCreate = useCallback(async (payload: { name: string }): Promise<PositionDTO> => {
+    try {
+      console.log("🔄 [Admin/Positions] Criando cargo:", payload.name)
+      const response = await api.post('/positions', payload)
+      const newPosition = response.data
+      setItems((prev) => [...prev, newPosition])
+      console.log("✅ [Admin/Positions] Cargo criado com sucesso:", newPosition.name)
+      return newPosition
+    } catch (error) {
+      console.error("❌ [Admin/Positions] Erro ao criar cargo:", error)
+      throw error // Re-throw para que o componente possa lidar com o erro
+    }
+  }, [])
 
   return (
     <Layout>
@@ -104,16 +121,17 @@ export default function PositionsList() {
 
         <CardBody>
           {loading ? (
-            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
-              {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} height="40px" borderRadius="md" />
-              ))}
-            </SimpleGrid>
+            <Loader message="Carregando cargos..." />
           ) : filtered.length === 0 ? (
-            <Flex py={8} direction="column" align="center" gap={2} color="muted">
-              <Heading size="sm">Nenhum cargo encontrado</Heading>
-              <Text fontSize="sm">Cadastre um novo ou ajuste a busca.</Text>
-            </Flex>
+            <NoDataFound
+              context={search.trim() ? "search" : "create"}
+              title={search.trim() ? "Nenhum cargo encontrado" : "Nenhum cargo cadastrado"}
+              description={
+                search.trim()
+                  ? "Tente ajustar o termo de busca ou limpar os filtros."
+                  : "Comece criando o primeiro cargo da sua organização."
+              }
+            />
           ) : (
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
               {filtered.map((p) => (
