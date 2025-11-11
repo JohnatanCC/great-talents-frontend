@@ -146,7 +146,7 @@ const components = {
                 field: {
                     borderRadius: "md",
                     bg: "surfaceSubtle",
-                    borderColor: "ring",
+                    borderColor: "border",
                     _placeholder: { color: "muted" },
                     _hover: { borderColor: "brand.300", _dark: { borderColor: "stone.400" } },
                     _focus: { boxShadow: "none" },
@@ -158,7 +158,7 @@ const components = {
                 field: {
                     borderRadius: "md",
                     bg: "surfaceSubtle",
-                    borderColor: "ring",
+                    borderColor: "border",
                     _focus: { boxShadow: "none" },
                     _focusVisible: { borderColor: "brand.400", boxShadow: focusRingSubtle },
                     transition: "all 0.18s cubic-bezier(.4,0,.2,1)",
@@ -184,7 +184,7 @@ const components = {
             outline: {
                 borderRadius: "md",
                 bg: "surfaceSubtle",
-                borderColor: "ring",
+                borderColor: "border",
                 _focus: { boxShadow: "none" },
                 _focusVisible: { borderColor: "brand.400", boxShadow: focusRingSubtle },
                 transition: "all 0.18s cubic-bezier(.4,0,.2,1)",
@@ -192,7 +192,7 @@ const components = {
             filled: {
                 borderRadius: "md",
                 bg: "surfaceSubtle",
-                borderColor: "ring",
+                borderColor: "border",
                 _focus: { boxShadow: "none" },
                 _focusVisible: { borderColor: "brand.400", boxShadow: focusRingSubtle },
                 transition: "all 0.18s cubic-bezier(.4,0,.2,1)",
@@ -213,7 +213,7 @@ const components = {
 
     Divider: {
         baseStyle: {
-            borderColor: "ring",
+            borderColor: "border",
             my: 4,
         },
     },
@@ -396,7 +396,7 @@ const components = {
                 fontWeight: 500,
                 _hover: {
                     bg: "surfaceSubtle",
-                    borderColor: "ring",
+                    borderColor: "border",
 
                 },
                 _focus: {
@@ -497,7 +497,7 @@ const components = {
                     padding: 4,
                     fontWeight: 600,
                     color: "white",
-                    borderColor: "ring",
+                    borderColor: "border",
                     bg: "brand.500",
                     _dark: { bg: "brand.200", color: "stone.800" },
                 },

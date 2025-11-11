@@ -26,6 +26,7 @@ import { defaultValuesNewSoftwareForm } from "../../../../constants/softwares.co
 import { validationNewSoftwareForm } from "../../../../validations/software.validation";
 import InputForm from "@/components/UI/InputForm";
 import { SelectForm } from "@/components/UI/SelectForm";
+import { SOFTWARE_LEVEL_OPTIONS } from "@/utils/levelMapping";
 
 /* ------------ Tipos do formulário (nivel com SelectOption) ------------ */
 interface NewSoftwareForm {
@@ -133,12 +134,7 @@ const ModalForm: React.FC<ModalProps> = ({ refresh, onClose, isOpen }) => {
                                 <SelectForm
                                     label="Nível"
                                     name="level"
-                                    options={[
-                                        { value: "Iniciante", label: "Iniciante" },
-                                        { value: "Intermediário", label: "Intermediário" },
-                                        { value: "Avançado", label: "Avançado" },
-                                        { value: "Fluente", label: "Fluente" }, // caso use p/ idiomas/ferramentas
-                                    ]}
+                                    options={SOFTWARE_LEVEL_OPTIONS}
                                     value={values.level}
                                     onChangeSelect={handleChangeSelect}
                                     errorMessage={errors.level?.message as string}

@@ -216,7 +216,7 @@ const OpportunitiesList = () => {
                     <Heading size="lg" as="h1">
                         Vagas disponíveis
                     </Heading>
-                    <Text color="GrayText" mt={2}>
+                    <Text color="muted" mt={2}>
                         Encontre a oportunidade que combina com você
                     </Text>
                 </CardHeader>

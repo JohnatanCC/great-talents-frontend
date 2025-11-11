@@ -63,9 +63,9 @@ export const SelectiveProcessCard: React.FC<ProcessCardProps> = ({ vaga }) => {
         <MotionCard
             onClick={() => navigate(`/empresa/processo-seletivo/detalhes/${vaga.id}`)}
             cursor="pointer"
-            bg="bg.surface"
+            bg="surfaceSubtle"
             borderWidth="1px"
-            borderColor={isHovered ? "primary.300" : "border"}
+            borderColor={isHovered ? "orange" : "border"}
             overflow="hidden"
             position="relative"
             onMouseEnter={() => setIsHovered(true)}
@@ -109,7 +109,7 @@ export const SelectiveProcessCard: React.FC<ProcessCardProps> = ({ vaga }) => {
 
                     {/* Ícone PCD */}
                     {vaga.is_pcd && (
-                        <Badge bg="primary" color="white" fontSize="sm">
+                        <Badge colorScheme="brand" variant="subtle">
                             <Icon as={Users} w={3} h={3} mr={1} />
                             PCD
                         </Badge>
@@ -122,9 +122,9 @@ export const SelectiveProcessCard: React.FC<ProcessCardProps> = ({ vaga }) => {
                     {/* Localização */}
                     <Center
                         p={3}
-                        bg="bg.subtle"
-                        borderRadius="lg"
+                        bg="surface"
                         borderWidth="1px"
+                        borderRadius="md"
                         borderColor="border"
                         flexDirection="column"
                         minH="80px"
@@ -143,8 +143,8 @@ export const SelectiveProcessCard: React.FC<ProcessCardProps> = ({ vaga }) => {
                     {/* Tipo de contrato */}
                     <Center
                         p={3}
-                        bg="bg.subtle"
-                        borderRadius="lg"
+                        bg="surface"
+                        borderRadius="md"
                         borderWidth="1px"
                         borderColor="border"
                         flexDirection="column"
@@ -164,8 +164,8 @@ export const SelectiveProcessCard: React.FC<ProcessCardProps> = ({ vaga }) => {
                     {/* Data de criação */}
                     <Center
                         p={3}
-                        bg="bg.subtle"
-                        borderRadius="lg"
+                        bg="surface"
+                        borderRadius="md"
                         borderWidth="1px"
                         borderColor="border"
                         flexDirection="column"

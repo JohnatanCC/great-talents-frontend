@@ -26,6 +26,7 @@ import { toastTemplate } from "../../../../templates/toast";
 import type { SelectOption } from "../../../../types/main.types";
 import InputForm from "@/components/UI/InputForm";
 import { SelectForm } from "@/components/UI/SelectForm";
+import { LEVEL_OPTIONS } from "@/utils/levelMapping";
 
 /* =========================================================
    Modal Interno
@@ -116,12 +117,7 @@ const ModalForm: React.FC<{
                                     name="level"
                                     label="Nível"
                                     placeholder="Selecione o nível"
-                                    options={[
-                                        { value: "beginner", label: "Iniciante" },
-                                        { value: "intermediate", label: "Intermediário" },
-                                        { value: "advanced", label: "Avançado" },
-                                        { value: "fluent", label: "Fluente" },
-                                    ]}
+                                    options={LEVEL_OPTIONS}
                                     value={valuesForm.level}
                                     onChangeSelect={handleChangeSelect}
                                     errorMessage={errors.level?.message as string}

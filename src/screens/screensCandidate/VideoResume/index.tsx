@@ -119,7 +119,7 @@ const VideoResume = () => {
                 <Heading as="h1" size="lg">
                     Enviando Vídeo Currículo
                 </Heading>
-                <Text color="GrayText">
+                <Text color="muted">
                     Anexe um vídeo currículo para se destacar. Compartilhe suas experiências, habilidades e personalidade de forma autêntica. Algumas vagas exigem vídeo currículo.
                 </Text>
             </Box>

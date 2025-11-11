@@ -102,7 +102,7 @@ export default function PositionsList() {
               onCreateApi={handleCreate}
               placeholder="Crie seu cargo (ex.: Operador de Caixa)"
             />
-            <Text mt={2} color="GrayText">
+            <Text mt={2} color="muted">
               Cargos são funções ou posições de trabalho em sua organização. Eles ajudam a categorizar e organizar as diferentes responsabilidades e níveis hierárquicos.
             </Text>
           </Box>

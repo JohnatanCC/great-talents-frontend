@@ -19,7 +19,7 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
         <Card>
             <CardHeader pb={0}>
                 <Heading size="md" fontWeight="semibold" mb={4}>Benefícios</Heading>
-                <Text color="GrayText">Adicione os benefícios oferecidos para a vaga.</Text>
+                <Text color="muted">Adicione os benefícios oferecidos para a vaga.</Text>
             </CardHeader>
             <CardBody>
                 <SimpleGrid columns={{ base: 1, sm: 1, md: 3 }}>

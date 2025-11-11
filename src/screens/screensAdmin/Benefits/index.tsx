@@ -104,7 +104,7 @@ export default function Benefits() {
               onCreateApi={handleCreate}
               placeholder="Adicionar novo benefício (ex.: Vale-refeição)"
             />
-            <Text mt={2} color="GrayText">
+            <Text mt={2} color="muted">
               Destacar os benefícios ao criar uma vaga é crucial para atrair
               os candidatos ideais e despertar interesse no cargo. Isso mostra
               o compromisso da empresa com o bem-estar dos colaboradores,

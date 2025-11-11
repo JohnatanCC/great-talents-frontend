@@ -100,7 +100,7 @@ export default function TagsList() {
               onCreateApi={handleCreate}
               placeholder="Crie sua tag (ex.: Comunicação)"
             />
-            <Text mt={2} color="GrayText">
+            <Text mt={2} color="muted">
               Tags são palavras-chave que ajudam a categorizar e destacar habilidades ou características importantes em uma vaga. Elas facilitam a busca e o filtro de vagas pelos candidatos.
             </Text>
           </Box>

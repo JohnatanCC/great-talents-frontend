@@ -115,7 +115,7 @@ const CandidateHome: React.FC = () => {
                     <Heading as="h1" size="lg">
                         Bem-vindo(a) ao Great Talents
                     </Heading>
-                    <Text color="GrayText" mt={1}>
+                    <Text color="muted" mt={1}>
                         Comece por aqui: crie seu currículo, explore vagas e mantenha seu perfil atualizado.
                     </Text>
                 </Box>

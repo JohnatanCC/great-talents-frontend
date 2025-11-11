@@ -7,13 +7,12 @@ import { Language } from "./contents/Language"
 import { Software } from "./contents/Software"
 const ResumeEdit = () => {
     return (
-        <Layout>
-
+        <Box >
             <Box mb={6}>
                 <Heading as="h1" size="lg">
                     Editar Currículo
                 </Heading>
-                <Text color="GrayText">
+                <Text color="muted">
                     Atualize suas informações profissionais e mantenha seu currículo sempre atualizado.
                 </Text>
             </Box>
@@ -25,7 +24,7 @@ const ResumeEdit = () => {
                 <Language />
                 <Software />
             </Flex>
-        </Layout>
+        </Box>
     )
 }
 

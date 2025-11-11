@@ -9,6 +9,7 @@ import {
     Flex,
     Heading,
     HStack,
+    Icon,
     IconButton,
     Modal,
     ModalBody,
@@ -39,6 +40,7 @@ import type { Company } from "@/types/companies.types"
 
 import SearchBar from "@/components/UI/SearchBar"
 import Content from "@/components/UI/Content"
+import { Plus } from "lucide-react"
 
 
 
@@ -184,17 +186,7 @@ export default function CompaniesList() {
             <CardHeader>
                 <Flex align="center" justify="space-between" gap={3} wrap="wrap">
                     <Heading size="lg">Empresas cadastradas</Heading>
-                    <HStack>
-                        <Button
-                            variant="outline"
-                            onClick={() => fetchCompanies()}
-                            isLoading={isLoading}
-                            size="sm"
-                        >
-                            Atualizar
-                        </Button>
-                        <Button colorScheme="brand" onClick={() => navigate("/admin/empresas/nova")}>Cadastrar</Button>
-                    </HStack>
+                    <Button colorScheme="brand" onClick={() => navigate("/admin/empresas/nova")}> <Icon as={Plus} mr={1} /> Cadastrar</Button>
                 </Flex>
 
                 <Flex mt={4}>

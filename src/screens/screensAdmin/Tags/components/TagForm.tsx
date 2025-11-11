@@ -1,7 +1,7 @@
 // src/pages/admin/tags/components/TagForm.tsx
 import React, { useMemo, useState } from "react"
 import { Flex, IconButton, Input, Spinner, useToast } from "@chakra-ui/react"
-import { AddIcon } from "@chakra-ui/icons"
+import { Plus } from "lucide-react";
 
 export type TagDTO = { id: number; name: string }
 
@@ -74,7 +74,7 @@ const TagForm: React.FC<TagFormProps> = ({
         placeholder={placeholder}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submit() } }}
       />
-      <IconButton type="submit" aria-label="Adicionar" colorScheme="green" isDisabled={loading} icon={loading ? <Spinner size="sm" /> : <AddIcon />} />
+      <IconButton type="submit" aria-label="Adicionar" colorScheme="green" isDisabled={loading} icon={loading ? <Spinner size="sm" /> : <Plus />} />
     </Flex>
   )
 }

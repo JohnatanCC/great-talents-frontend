@@ -41,7 +41,7 @@ export const ProfileSelect: React.FC<LevelCardProps> = ({
                 p={2}
                 boxShadow="md"
             >
-                <LucideBriefcase color={isActive ? "white" : "GrayText"} size="20px" />
+                <LucideBriefcase color={isActive ? "white" : "muted"} size="20px" />
             </Box>
             <CardBody
                 flexDir="column"

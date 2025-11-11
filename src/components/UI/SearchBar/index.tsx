@@ -25,8 +25,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onChange,
   ...rest
 }) => {
-  const bg = useColorModeValue("gray.50", "whiteAlpha.100");
-  const border = useColorModeValue("gray.200", "whiteAlpha.300");
 
   return (
     <Box w="full">
@@ -37,10 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          borderWidth={1}
-          borderColor={border}
           borderRadius="full"
-          bg={bg}
           pr={10}
         />
         <InputRightElement>
@@ -49,7 +44,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             icon={<LucideSearch />}
             marginRight={4}
             variant="ghost"
-            color="fg.subtle"
+            color="muted"
             pointerEvents="none"
           />
         </InputRightElement>

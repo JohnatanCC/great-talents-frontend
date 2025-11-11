@@ -200,7 +200,7 @@ export const Board = ({ seletionProcessId, title }: BoardProps) => {
         <Card
             transition="all ease .4s"
             size="sm"
-            borderColor="ring"
+            borderColor="border"
             bg="surfaceSubtle"
 
         >

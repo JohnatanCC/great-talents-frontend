@@ -125,219 +125,218 @@ const OpportunitiesView: React.FC = () => {
     return (
         <Layout>
             <Content>
-                <Card variant="unstyled">
-                    {/* HEADER */}
-                    <CardHeader
-                        display="flex"
-                        flexDir={{ base: "column", md: "row" }}
-                        justifyContent="space-between"
-                        alignItems={{ base: "start", md: "center" }}
-                        gap={3}
-                    >
-                        <Box>
-                            <Heading size="lg">
-                                {loading ? <Skeleton w="320px" h="28px" /> : job?.title}
-                            </Heading>
-                            <HStack spacing={2} mt={2} flexWrap="wrap">
-                                {loading ? (
-                                    <>
-                                        <Skeleton w="120px" h="22px" />
-                                        <Skeleton w="120px" h="22px" />
-                                    </>
-                                ) : (
-                                    <>
-                                        {job?.position?.name && (
-                                            <Badge colorScheme="secondary" variant="subtle">{job.position.name}</Badge>
-                                        )}
-                                        {job?.contract_type && (
-                                            <Badge colorScheme="brand" variant="subtle">{job.contract_type}</Badge>
-                                        )}
-                                        {job?.work_modality && <Badge variant="subtle">{job.work_modality}</Badge>}
-                                        {job?.salary_range && (
-                                            <Badge variant="subtle" title="Faixa salarial">
-                                                {job.salary_range}
-                                            </Badge>
-                                        )}
-                                        {job?.is_pcd && (
-                                            <Badge colorScheme="brand" variant="subtle">Vaga para PCD</Badge>
-                                        )}
-                                    </>
-                                )}
-                            </HStack>
-                        </Box>
 
-                        <Button colorScheme="green" onClick={handleRegisterSelectionProcess} isDisabled={loading}>
-                            Candidate-se
-                        </Button>
-                    </CardHeader>
+                <CardHeader
+                    display="flex"
+                    flexDir={{ base: "column", md: "row" }}
+                    justifyContent="space-between"
+                    alignItems={{ base: "start", md: "center" }}
+                    gap={3}
+                >
+                    <Box>
+                        <Heading size="lg">
+                            {loading ? <Skeleton w="320px" h="28px" /> : job?.title}
+                        </Heading>
+                        <HStack spacing={2} mt={2} flexWrap="wrap">
+                            {loading ? (
+                                <>
+                                    <Skeleton w="120px" h="22px" />
+                                    <Skeleton w="120px" h="22px" />
+                                </>
+                            ) : (
+                                <>
+                                    {job?.position?.name && (
+                                        <Badge colorScheme="secondary" variant="subtle">{job.position.name}</Badge>
+                                    )}
+                                    {job?.contract_type && (
+                                        <Badge colorScheme="brand" variant="subtle">{job.contract_type}</Badge>
+                                    )}
+                                    {job?.work_modality && <Badge variant="subtle">{job.work_modality}</Badge>}
+                                    {job?.salary_range && (
+                                        <Badge variant="subtle" title="Faixa salarial">
+                                            {job.salary_range}
+                                        </Badge>
+                                    )}
+                                    {job?.is_pcd && (
+                                        <Badge colorScheme="brand" variant="subtle">Vaga para PCD</Badge>
+                                    )}
+                                </>
+                            )}
+                        </HStack>
+                    </Box>
 
-                    <Divider my={4} borderColor="border" />
+                    <Button colorScheme="green" onClick={handleRegisterSelectionProcess} isDisabled={loading}>
+                        Candidate-se
+                    </Button>
+                </CardHeader>
 
-                    {/* BODY */}
-                    <CardBody>
-                        {/* SOBRE */}
-                        <Card variant="unstyled">
+                <Divider my={4} borderColor="border" />
+
+                {/* BODY */}
+                <CardBody>
+                    {/* SOBRE */}
+                    <Card variant="unstyled">
+                        <CardHeader pb={2}>
+                            <Heading size="md">Sobre a vaga</Heading>
+                        </CardHeader>
+                        <CardBody pt={0}>
+                            {loading ? (
+                                <SkeletonText noOfLines={4} spacing="3" />
+                            ) : (
+                                <Text lineHeight="1.8">{job?.description}</Text>
+                            )}
+                        </CardBody>
+                    </Card>
+
+                    {/* GRID DE INFORMACOES / BENEFICIOS / REQUISITOS */}
+                    <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mt={4}>
+                        {/* Informações gerais */}
+                        <Card size="sm" bg="surfaceSubtle">
                             <CardHeader pb={2}>
-                                <Heading size="md">Sobre a vaga</Heading>
+                                <Heading size="md">Informações gerais</Heading>
                             </CardHeader>
                             <CardBody pt={0}>
                                 {loading ? (
-                                    <SkeletonText noOfLines={4} spacing="3" />
+                                    <Stack>
+                                        <Skeleton h="18px" w="60%" />
+                                        <Skeleton h="18px" w="50%" />
+                                        <Skeleton h="18px" w="70%" />
+                                        <Skeleton h="18px" w="40%" />
+                                    </Stack>
                                 ) : (
-                                    <Text lineHeight="1.8">{job?.description}</Text>
-                                )}
-                            </CardBody>
-                        </Card>
-
-                        {/* GRID DE INFORMACOES / BENEFICIOS / REQUISITOS */}
-                        <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mt={4}>
-                            {/* Informações gerais */}
-                            <Card size="sm" variant="outline">
-                                <CardHeader pb={2}>
-                                    <Heading size="md">Informações gerais</Heading>
-                                </CardHeader>
-                                <CardBody pt={0}>
-                                    {loading ? (
-                                        <Stack>
-                                            <Skeleton h="18px" w="60%" />
-                                            <Skeleton h="18px" w="50%" />
-                                            <Skeleton h="18px" w="70%" />
-                                            <Skeleton h="18px" w="40%" />
-                                        </Stack>
-                                    ) : (
-                                        <List spacing={2}>
-                                            <ListItem>
-                                                <HStack align="start" spacing={2}>
-                                                    <Icon as={Briefcase} boxSize={4} />
-                                                    <Text><Text as="span" fontWeight="semibold">Perfil:</Text> {job?.profile || "—"}</Text>
-                                                </HStack>
-                                            </ListItem>
-                                            <ListItem>
-                                                <HStack align="start" spacing={2}>
-                                                    <Icon as={Banknote} boxSize={4} />
-                                                    <Text><Text as="span" fontWeight="semibold">Salário:</Text> {job?.salary_range || "—"}</Text>
-                                                </HStack>
-                                            </ListItem>
-                                            <ListItem>
-                                                <HStack align="start" spacing={2}>
-                                                    <Icon as={GraduationCap} boxSize={4} />
-                                                    <Text><Text as="span" fontWeight="semibold">Escolaridade:</Text> {job?.education || "—"}</Text>
-                                                </HStack>
-                                            </ListItem>
-                                            <ListItem>
-                                                <HStack align="start" spacing={2}>
-                                                    <Icon as={Users} boxSize={4} />
-                                                    <Text>
-                                                        <Text as="span" fontWeight="semibold">Modalidade:</Text> {job?.work_modality || "—"}
-                                                        {job?.is_pcd && <> • <Badge colorScheme="brand" variant="subtle">PCD</Badge></>}
-                                                    </Text>
-                                                </HStack>
-                                            </ListItem>
-                                        </List>
-                                    )}
-                                </CardBody>
-                            </Card>
-
-                            {/* Benefícios */}
-                            <Card size="sm" variant="outline">
-                                <CardHeader pb={2}>
-                                    <Heading size="md">Benefícios</Heading>
-                                </CardHeader>
-                                <CardBody pt={0}>
-                                    {loading ? (
-                                        <Stack>
-                                            <Skeleton h="18px" w="70%" />
-                                            <Skeleton h="18px" w="60%" />
-                                            <Skeleton h="18px" w="50%" />
-                                        </Stack>
-                                    ) : job?.selection_process_benefits?.length ? (
-                                        <List spacing={2}>
-                                            {job.selection_process_benefits.map((b) => (
-                                                <ListItem key={b.id}>
-                                                    • {b.description}
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    ) : (
-                                        <Text color="muted">Nenhum benefício informado.</Text>
-                                    )}
-                                </CardBody>
-                            </Card>
-
-                            {/* Requisitos (2 col grid em desktop se quiser ajustar) */}
-                            <Card size="sm" variant="outline" gridColumn={{ base: "auto", md: "1 / -1" }}>
-                                <CardHeader pb={2}>
-                                    <Heading size="md">Requisitos</Heading>
-                                </CardHeader>
-                                <CardBody pt={0}>
-                                    {loading ? (
-                                        <Stack>
-                                            <Skeleton h="18px" w="70%" />
-                                            <Skeleton h="18px" w="60%" />
-                                            <Skeleton h="18px" w="50%" />
-                                        </Stack>
-                                    ) : job?.selection_process_requirements?.length ? (
-                                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={2}>
-                                            {job.selection_process_requirements.map((r) => (
-                                                <Box key={r.id}>
-                                                    <Text>
-                                                        {r.name}{" "}
-                                                        <Badge ml={2} colorScheme={r.required ? "brand" : "secondary"} variant="subtle">
-                                                            {r.required ? "Obrigatório" : "Opcional"}
-                                                        </Badge>
-                                                    </Text>
-                                                </Box>
-                                            ))}
-                                        </SimpleGrid>
-                                    ) : (
-                                        <Text color="muted">Nenhum requisito listado.</Text>
-                                    )}
-                                </CardBody>
-                            </Card>
-                        </SimpleGrid>
-
-                        {/* EMPRESA */}
-                        <Card size="sm" bg="surfaceSubtle" variant="outline" mt={4}>
-                            <CardHeader pb={2}>
-                                <Heading size="md">Sobre a empresa</Heading>
-                            </CardHeader>
-                            <CardBody pt={0}>
-                                {loading ? (
-                                    <HStack align="start" spacing={4}>
-                                        <Skeleton boxSize="16" borderRadius="full" />
-                                        <Box flex="1">
-                                            <Skeleton h="18px" w="50%" />
-                                            <SkeletonText mt={3} noOfLines={3} spacing="3" />
-                                        </Box>
-                                    </HStack>
-                                ) : (
-                                    <HStack align="start" spacing={4} flexWrap="wrap">
-                                        <Avatar
-                                            size="lg"
-                                            src={job?.company?.photo || undefined}
-                                            name={job?.company?.name}
-                                        />
-                                        <Box flex="1" minW="240px">
-                                            <Heading size="sm" mb={1}>{job?.company?.name}</Heading>
-                                            <Text color="muted" mb={2}>{job?.company?.description}</Text>
-
-                                            <HStack spacing={4} flexWrap="wrap">
-                                                {(job?.city || job?.company?.neighborhood) && (
-                                                    <HStack spacing={1}>
-                                                        <Icon as={MapPin} boxSize={4} />
-                                                        <Text fontSize="sm">
-                                                            {job?.city && job?.state ? `${job.city} • ${job.state}` : job?.company?.neighborhood}
-                                                        </Text>
-                                                    </HStack>
-                                                )}
+                                    <List spacing={2}>
+                                        <ListItem>
+                                            <HStack align="start" spacing={2}>
+                                                <Icon as={Briefcase} boxSize={4} />
+                                                <Text><Text as="span" fontWeight="semibold">Perfil:</Text> {job?.profile || "—"}</Text>
                                             </HStack>
-                                        </Box>
-                                    </HStack>
+                                        </ListItem>
+                                        <ListItem>
+                                            <HStack align="start" spacing={2}>
+                                                <Icon as={Banknote} boxSize={4} />
+                                                <Text><Text as="span" fontWeight="semibold">Salário:</Text> {job?.salary_range || "—"}</Text>
+                                            </HStack>
+                                        </ListItem>
+                                        <ListItem>
+                                            <HStack align="start" spacing={2}>
+                                                <Icon as={GraduationCap} boxSize={4} />
+                                                <Text><Text as="span" fontWeight="semibold">Escolaridade:</Text> {job?.education || "—"}</Text>
+                                            </HStack>
+                                        </ListItem>
+                                        <ListItem>
+                                            <HStack align="start" spacing={2}>
+                                                <Icon as={Users} boxSize={4} />
+                                                <Text>
+                                                    <Text as="span" fontWeight="semibold">Modalidade:</Text> {job?.work_modality || "—"}
+                                                    {job?.is_pcd && <> • <Badge colorScheme="brand" variant="subtle">PCD</Badge></>}
+                                                </Text>
+                                            </HStack>
+                                        </ListItem>
+                                    </List>
                                 )}
                             </CardBody>
                         </Card>
-                    </CardBody>
-                </Card>
+
+                        {/* Benefícios */}
+                        <Card size="sm" bg="surfaceSubtle">
+                            <CardHeader pb={2}>
+                                <Heading size="md">Benefícios</Heading>
+                            </CardHeader>
+                            <CardBody pt={0}>
+                                {loading ? (
+                                    <Stack>
+                                        <Skeleton h="18px" w="70%" />
+                                        <Skeleton h="18px" w="60%" />
+                                        <Skeleton h="18px" w="50%" />
+                                    </Stack>
+                                ) : job?.selection_process_benefits?.length ? (
+                                    <List spacing={2}>
+                                        {job.selection_process_benefits.map((b) => (
+                                            <ListItem key={b.id}>
+                                                • {b.description}
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                ) : (
+                                    <Text color="muted">Nenhum benefício informado.</Text>
+                                )}
+                            </CardBody>
+                        </Card>
+
+                        {/* Requisitos (2 col grid em desktop se quiser ajustar) */}
+                        <Card size="sm" bg="surfaceSubtle" gridColumn={{ base: "auto", md: "1 / -1" }}>
+                            <CardHeader pb={2}>
+                                <Heading size="md">Requisitos</Heading>
+                            </CardHeader>
+                            <CardBody pt={0}>
+                                {loading ? (
+                                    <Stack>
+                                        <Skeleton h="18px" w="70%" />
+                                        <Skeleton h="18px" w="60%" />
+                                        <Skeleton h="18px" w="50%" />
+                                    </Stack>
+                                ) : job?.selection_process_requirements?.length ? (
+                                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={2}>
+                                        {job.selection_process_requirements.map((r) => (
+                                            <Box key={r.id}>
+                                                <Text>
+                                                    {r.name}{" "}
+                                                    <Badge ml={2} colorScheme={r.required ? "brand" : "secondary"} variant="subtle">
+                                                        {r.required ? "Obrigatório" : "Opcional"}
+                                                    </Badge>
+                                                </Text>
+                                            </Box>
+                                        ))}
+                                    </SimpleGrid>
+                                ) : (
+                                    <Text color="muted">Nenhum requisito listado.</Text>
+                                )}
+                            </CardBody>
+                        </Card>
+                    </SimpleGrid>
+
+                    {/* EMPRESA */}
+                    <Card size="sm" variant="unstyled" mt={4}>
+                        <CardHeader pb={2}>
+                            <Heading size="md">Sobre a empresa</Heading>
+                        </CardHeader>
+                        <CardBody pt={0}>
+                            {loading ? (
+                                <HStack align="start" spacing={4}>
+                                    <Skeleton boxSize="16" borderRadius="full" />
+                                    <Box flex="1">
+                                        <Skeleton h="18px" w="50%" />
+                                        <SkeletonText mt={3} noOfLines={3} spacing="3" />
+                                    </Box>
+                                </HStack>
+                            ) : (
+                                <HStack align="start" spacing={4} flexWrap="wrap">
+                                    <Avatar
+                                        size="lg"
+                                        src={job?.company?.photo || undefined}
+                                        name={job?.company?.name}
+                                    />
+                                    <Box flex="1" minW="240px">
+                                        <Heading size="sm" mb={1}>{job?.company?.name}</Heading>
+                                        <Text color="muted" mb={2}>{job?.company?.description}</Text>
+
+                                        <HStack spacing={4} flexWrap="wrap">
+                                            {(job?.city || job?.company?.neighborhood) && (
+                                                <HStack spacing={1}>
+                                                    <Icon as={MapPin} boxSize={4} />
+                                                    <Text fontSize="sm">
+                                                        {job?.city && job?.state ? `${job.city} • ${job.state}` : job?.company?.neighborhood}
+                                                    </Text>
+                                                </HStack>
+                                            )}
+                                        </HStack>
+                                    </Box>
+                                </HStack>
+                            )}
+                        </CardBody>
+                    </Card>
+                </CardBody>
+
             </Content>
             {/* CALL TO ACTION */}
             <Card size="sm" mt={6} textAlign="center">

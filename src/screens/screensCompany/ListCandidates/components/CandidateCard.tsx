@@ -43,7 +43,7 @@ const CandidateCard: React.FC<Props> = ({ candidate }) => {
             cursor="pointer"
             position="relative"
             size="sm"
-            borderColor="ring"
+            borderColor="border"
             bg="surfaceSubtle"
             borderRadius="md"
             shadow="sm"
@@ -81,8 +81,8 @@ const CandidateCard: React.FC<Props> = ({ candidate }) => {
                 h="full"
                 w={8}
                 borderRadius="md"
-                color="white"
-                bg="blackAlpha.700"
+                color="orange"
+                bg="InactiveCaption"
                 initial={{ opacity: 0, x: 12 }}
                 animate={hover ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
                 transition={{ duration: 0.25 }}

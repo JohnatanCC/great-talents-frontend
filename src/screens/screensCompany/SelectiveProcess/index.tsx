@@ -6,6 +6,7 @@ import {
     Tabs, TabList, TabPanels, TabPanel, Tab, SimpleGrid,
     Text, useToast,
     Button,
+    Icon,
 } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom"
 import Layout from "@/Layout"
@@ -17,6 +18,7 @@ import { normalize } from "@/utils/normalize"
 import type { SelectionProcess } from "@/types/selectionProcess.types"
 import Loader from "@/components/UI/Loader"
 import NoDataFound from "@/components/UI/NoDataFound"
+import { Plus } from "lucide-react"
 
 // ===== Toggle de mock =====
 const USE_MOCK = true // Temporariamente habilitado devido a erro 500 no backend
@@ -333,55 +335,15 @@ async function listByStatus(): Promise<SelectionProcessesByStatus> {
                     <Flex align="center" justify="space-between" gap={3} wrap="wrap">
                         <Heading size="lg" fontWeight={800} letterSpacing={-1}>Processos seletivos</Heading>
                         <HStack>
-                            {USE_MOCK && (
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    bg="primary"
-                                    color="white"
-                                    _hover={{ bg: "primary.600" }}
-                                    onClick={async () => {
-                                        console.log("🧪 [Debug] Testando API diretamente...")
-                                        try {
-                                            const result = await SelectionProcessService.findAllByStatus()
-                                            console.log("✅ [Debug] API funcionando:", result)
-                                            toast({
-                                                title: "API funcionando!",
-                                                description: "Dados carregados com sucesso da API",
-                                                status: "success"
-                                            })
-                                        } catch (error) {
-                                            console.error("❌ [Debug] API com erro:", error)
-                                            toast({
-                                                title: "API com erro",
-                                                description: "Verifique o console para detalhes",
-                                                status: "error"
-                                            })
-                                        }
-                                    }}
-                                >
-                                    🧪 Testar API
-                                </Button>
-                            )}
-                            <Button 
-                                onClick={() => navigate("/empresa/processo-seletivo/novo")} 
-                                bg="success" 
-                                color="white" 
-                                _hover={{ bg: "success.600" }}
+                            <Button
+                                onClick={() => navigate("/empresa/processo-seletivo/novo")}
+                                colorScheme="green"
                             >
+                                <Icon as={Plus} mr={1} />
                                 Novo processo
                             </Button>
                         </HStack>
                     </Flex>
-
-                    {USE_MOCK && (
-                        <Flex mt={4} p={3} bg="warning.50" borderWidth={1} borderColor="warning.200" borderRadius="md">
-                            <Text fontSize="sm" color="warning.700">
-                                ⚠️ <strong>Modo desenvolvimento:</strong> Exibindo dados de exemplo devido a erro 500 no servidor.
-                                Use o botão "🧪 Testar API" para verificar se o servidor está funcionando.
-                            </Text>
-                        </Flex>
-                    )}
 
                     {/* contador + busca */}
                     <Flex mt={6} gap={6} align="center" wrap="wrap">
@@ -417,7 +379,6 @@ async function listByStatus(): Promise<SelectionProcessesByStatus> {
                                     {loading ? (
                                         <Loader
                                             message="Carregando processos seletivos..."
-                                            minHeight="200px"
                                         />
                                     ) : list.length === 0 ? (
                                         <NoDataFound
@@ -448,6 +409,6 @@ async function listByStatus(): Promise<SelectionProcessesByStatus> {
 
                 <CardBody pt={0} />
             </Content>
-        </Layout>
+        </Layout >
     )
 }

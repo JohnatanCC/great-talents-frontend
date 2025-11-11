@@ -24,7 +24,6 @@ import {
     FormControl,
     FormLabel,
     FormHelperText,
-    Progress,
     useToast,
     Textarea,
 } from "@chakra-ui/react"
@@ -38,6 +37,7 @@ import { profileSchema } from "./schema"
 import TextareaForm from "@/components/UI/TexareaForm"
 import Layout from "@/Layout"
 import AvatarUploader from "@/components/UI/AvatarUploader"
+import { LEVEL_OPTIONS as IMPORTED_LEVEL_OPTIONS } from "@/utils/levelMapping"
 
 /**
  * CandidateProfilePage
@@ -94,12 +94,7 @@ const GENDER_OPTIONS = [
     { value: "prefer_not", label: "Prefiro não informar" },
 ]
 
-const LEVEL_OPTIONS = [
-    { value: "beginner", label: "Iniciante" },
-    { value: "intermediate", label: "Intermediário" },
-    { value: "advanced", label: "Avançado" },
-    { value: "fluent", label: "Fluente" },
-]
+const LEVEL_OPTIONS = IMPORTED_LEVEL_OPTIONS
 
 export default function CandidateProfile() {
     const toast = useToast()
